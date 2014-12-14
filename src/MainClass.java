@@ -285,8 +285,6 @@ public class MainClass extends PApplet {
 
 	private void readData() {
 		movies = loadJSONObject("../imdb_1990/imdb-movies.json");
-		// println(movies);
 		peoples = loadJSONObject("../imdb_1990/imdb-peoples.json");
-		// println(peoples);
 	}
 }
