@@ -2,7 +2,7 @@ import java.awt.geom.Point2D;
 
 import processing.core.PApplet;
 
-public class TimeLine {
+public class TimeLineViz {
 	private int beginDate;
 	private int endDate;
 	private int currentDate;
@@ -13,7 +13,7 @@ public class TimeLine {
 	private int cursorColor;
 	private final PApplet p;
 
-	public TimeLine(PApplet p, int beginDate, int endDate, int currentDate,
+	public TimeLineViz(PApplet p, int beginDate, int endDate, int currentDate,
 			Point2D.Float beginPosition, Point2D.Float endPosition,
 			Point2D.Float currentPosition, int color, int cursorColor) {
 		super();
@@ -92,7 +92,7 @@ public class TimeLine {
 		this.cursorColor = cursorColor;
 	}
 
-	public void drawTimeLine() {
+	public void drawTimeLineViz() {
 		p.line((float) beginPosition.getX(), (float) beginPosition.getY(),
 				(float) endPosition.getX(), (float) endPosition.getY());
 		p.textSize(20);

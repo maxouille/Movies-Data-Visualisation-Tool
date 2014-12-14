@@ -8,11 +8,12 @@ import processing.data.JSONArray;
 import processing.data.JSONObject;
 import Model.Movie;
 import Model.RGB;
+import aurelienribon.tweenengine.*;
 
 public class MainClass extends PApplet {
 
 	private PieChart pie;
-	private TimeLine timeLine;
+	private TimeLineViz timeLineViz;
 	private boolean pressed = false;
 	private JSONObject movies;
 	private JSONObject peoples;
@@ -47,7 +48,7 @@ public class MainClass extends PApplet {
 				backgroundColor.getBlue());
 
 		// Set the timeline
-		timeLine = new TimeLine(this, 1990, 2013, 2005, new Point2D.Float(30,
+		timeLineViz = new TimeLineViz(this, 1990, 2013, 2005, new Point2D.Float(30,
 				50), new Point2D.Float(770, 50), new Point2D.Float(700, 50), 0,
 				0);
 
@@ -86,7 +87,7 @@ public class MainClass extends PApplet {
 		// If first actvity
 		if (!secondActivity) {
 			if (!anim) {
-			timeLine.drawTimeLine();
+			timeLineViz.drawTimeLineViz();
 			setPieChartAngles();
 			pieInteraction();
 			}
@@ -94,9 +95,9 @@ public class MainClass extends PApplet {
 			
 		} else if (secondActivity) {
 			// TODO : draw things for the graph
-			/* ici pour r√©cup√©rer les datas des movies :
-			 * suivant la partie cliqu√© : 1/2/3/4/5/6/7/8
-			 * les films associ√©s sont dans movieList tri√©s dans l'odre croissant des budgets
+			/* ici pour récupérer les datas des movies :
+			 * suivant la partie cliquée : 1/2/3/4/5/6/7/8
+			 * les films associés sont dans movieList triés dans l'odre croissant des budgets
 			 * EX : si on est dans la partie 4
 			 * les films associ√©s sont les elements de movieList de nbPart1+nbPart2+nbPart3 -1 √† nbPart1 +nbPart2+nbPart3+nbPart4-1 
 			 */
@@ -110,7 +111,7 @@ public class MainClass extends PApplet {
 			JSONObject mov = movs.getJSONObject(i);
 
 			if (mov.keys().containsAll(test)
-					&& timeLine.getCurrentDate() == Integer.parseInt(mov
+					&& timeLineViz.getCurrentDate() == Integer.parseInt(mov
 							.getString("date").substring(0, 4))) {
 				movieList.add(new Movie(mov.getInt("bo"), mov
 						.getString("title"), mov.getJSONArray("genres"), mov
@@ -190,8 +191,8 @@ public class MainClass extends PApplet {
 	}
 
 	public void mousePressed() {
-		if (Math.abs(mouseX - timeLine.getCurrentPosition().getX()) < 20
-				&& Math.abs(mouseY - timeLine.getCurrentPosition().getY()) < 20) {
+		if (Math.abs(mouseX - timeLineViz.getCurrentPosition().getX()) < 20
+				&& Math.abs(mouseY - timeLineViz.getCurrentPosition().getY()) < 20) {
 			pressed = true;
 		}
 	}
@@ -202,10 +203,10 @@ public class MainClass extends PApplet {
 
 	public void mouseDragged() {
 		if (pressed) {
-			if (mouseX >= timeLine.getBeginPosition().getX()
-					&& mouseX <= timeLine.getEndPosition().getX()) {
-				timeLine.setCurrentPosition(new Point2D.Float(mouseX, 50));
-				timeLine.updateDate();
+			if (mouseX >= timeLineViz.getBeginPosition().getX()
+					&& mouseX <= timeLineViz.getEndPosition().getX()) {
+				timeLineViz.setCurrentPosition(new Point2D.Float(mouseX, 50));
+				timeLineViz.updateDate();
 				anim = false;
 			}
 		}
