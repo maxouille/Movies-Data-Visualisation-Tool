@@ -27,6 +27,8 @@ public class MainClass extends PApplet {
 	private boolean anim = false;
 
 	private RGB backgroundColor = new RGB(255, 255, 255);
+	
+	private static final long serialVersionUID = 1L;
 
 	public void setup() {
 		// Fill test
