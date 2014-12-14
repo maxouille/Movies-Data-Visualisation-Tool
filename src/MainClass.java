@@ -23,8 +23,11 @@ public class MainClass extends PApplet {
 	private float angle1, angle2, angle3, angle4, angle5, angle6, angle7,
 			angle8;
 	private static final float pieDiameter = 300;
-	private boolean needRedraw = true;
-	
+	private boolean secondActivity = false;
+	private boolean anim = false;
+
+	private RGB backgroundColor = new RGB(255, 255, 255);
+
 	public void setup() {
 		// Fill test
 		test.add("bo");
@@ -38,7 +41,8 @@ public class MainClass extends PApplet {
 		test.add("date");
 
 		size(800, 600);
-		background(255);
+		background(backgroundColor.getRed(), backgroundColor.getGreen(),
+				backgroundColor.getBlue());
 
 		// Set the timeline
 		timeLine = new TimeLine(this, 1990, 2013, 2005, new Point2D.Float(30,
@@ -75,15 +79,27 @@ public class MainClass extends PApplet {
 	}
 
 	public void draw() {
-		if (needRedraw) {
-			background(255);
+		background(backgroundColor.getRed(), backgroundColor.getGreen(),
+				backgroundColor.getBlue());
+		// If first actvity
+		if (!secondActivity) {
+			if (!anim) {
 			timeLine.drawTimeLine();
 			setPieChartAngles();
+			pieInteraction();
+			}
 			pie.drawPieChart();
-			needRedraw = false;
+			
+		} else if (secondActivity) {
+			// TODO : draw things for the graph
+			/* ici pour récupérer les datas des movies :
+			 * suivant la partie cliqué : 1/2/3/4/5/6/7/8
+			 * les films associés sont dans movieList triés dans l'odre croissant des budgets
+			 * EX : si on est dans la partie 4
+			 * les films associés sont les elements de movieList de nbPart1+nbPart2+nbPart3 -1 à nbPart1 +nbPart2+nbPart3+nbPart4-1 
+			 */
 		}
-		pieInteraction();
-		
+
 	}
 
 	public void setPieChartAngles() {
@@ -164,7 +180,7 @@ public class MainClass extends PApplet {
 		angle6 = (float) (nbPart6 * 360) / nbMovies;
 		angle7 = (float) (nbPart7 * 360) / nbMovies;
 		angle8 = 360 - angle1 - angle2 - angle3 - angle4 - angle5 - angle6
-				- angle7;// (float) (nbPart8 * 360) / nbMovies;
+				- angle7;
 
 		float[] angles = { angle1, angle2, angle3, angle4, angle5, angle6,
 				angle7, angle8 };
@@ -188,7 +204,7 @@ public class MainClass extends PApplet {
 					&& mouseX <= timeLine.getEndPosition().getX()) {
 				timeLine.setCurrentPosition(new Point2D.Float(mouseX, 50));
 				timeLine.updateDate();
-				needRedraw = true;
+				anim = false;
 			}
 		}
 
@@ -196,54 +212,161 @@ public class MainClass extends PApplet {
 		redraw();
 	}
 
+	private void launchAnimation(int nb) {
+		switch (nb) {
+		case 0:
+
+			while (angle1 < 360) {
+				angle1 += 1;
+				if (angle2 > 0) {
+					angle2 -= 1;
+				} else if (angle3 > 0) {
+					angle2 = 0;
+					angle3 -= 1;
+				} else if (angle4 > 0) {
+					angle3 = 0;
+					angle4 -= 1;
+				} else if (angle5 > 0) {
+					angle4 = 0;
+					angle5 -= 1;
+				} else if (angle6 > 0) {
+					angle5 = 0;
+					angle6 -= 1;
+				} else if (angle7 > 0) {
+					angle6 = 0;
+					angle7 -= 1;
+				} else if (angle8 > 0) {
+					angle7 = 0;
+					angle8 -= 1;
+				}
+				angle8 = 0;
+				float[] angles = { angle1, angle2, angle3, angle4, angle5,
+						angle6, angle7, angle8 };
+				pie.setAngles(angles);
+				redraw();
+			}
+			
+			float[] angles = { 360, 0, 0, 0, 0, 0, 0, 0 };
+			pie.setAngles(angles);
+			redraw();
+
+			while (pie.maxDiams() < width+300 || pie.maxDiams() < height+300) {
+				pie.setDiams((float) (pie.getDiam() + 0.0001));
+				redraw();
+			}
+
+			 backgroundColor = pie.getColor().get(0);
+			 secondActivity = true;
+			anim = false;
+			break;
+		case 1:
+			backgroundColor = pie.getColor().get(1);
+			secondActivity = true;
+			break;
+		case 2:
+			backgroundColor = pie.getColor().get(2);
+			secondActivity = true;
+			break;
+		case 3:
+			backgroundColor = pie.getColor().get(3);
+			secondActivity = true;
+			break;
+		case 4:
+			backgroundColor = pie.getColor().get(4);
+			secondActivity = true;
+			break;
+		case 5:
+			backgroundColor = pie.getColor().get(5);
+			secondActivity = true;
+			break;
+		case 6:
+			backgroundColor = pie.getColor().get(6);
+			secondActivity = true;
+			break;
+		case 7:
+			backgroundColor = pie.getColor().get(7);
+			secondActivity = true;
+			break;
+		default:
+			break;
+		}
+
+	}
+
 	/**
 	 * When the mouse is moved and a mouse button is not pressed
 	 */
 	public void pieInteraction() {
-		//Get polar coords
+		// Get polar coords
 		float[] newCoords = CartesianToPolar(mouseX, mouseY);
-		//convert theta from radians to degrees
+		// convert theta from radians to degrees
 		float theta = (float) ((newCoords[1] * 180) / Math.PI);
-		println("thta : "+theta);
 		if (dist(mouseX, mouseY, pie.getCenterX(), pie.getCenterY()) < pie
-				.getDiam()/2) {
+				.getDiam() / 2) {
 			if (theta > 0 && theta < angle1) {
-				pie.resetDiams(pieDiameter);
-				pie.setDiam(pieDiameter+50, 0);
-			} 
-			else if (theta >= angle1 && theta < angle1 + angle2) {
-				pie.resetDiams(pieDiameter);
-				pie.setDiam(pieDiameter+50, 1);
-			} 
-			else if (theta >= angle1 + angle2 && theta < angle1 + angle2 + angle3) {
-				pie.resetDiams(pieDiameter);
-				pie.setDiam(pieDiameter+50, 2);
+				if (mousePressed) {
+					launchAnimation(0);
+					anim = true;
+				}
+				if (!anim) {
+					pie.setDiams(pieDiameter);
+					pie.setDiam(pieDiameter + 50, 0);
+				}
+			} else if (theta >= angle1 && theta < angle1 + angle2) {
+				pie.setDiams(pieDiameter);
+				pie.setDiam(pieDiameter + 50, 1);
+				if (mousePressed) {
+					launchAnimation(1);
+				}
+			} else if (theta >= angle1 + angle2
+					&& theta < angle1 + angle2 + angle3) {
+				pie.setDiams(pieDiameter);
+				pie.setDiam(pieDiameter + 50, 2);
+				if (mousePressed) {
+					launchAnimation(2);
+				}
+			} else if (theta >= angle1 + angle2 + angle3
+					&& theta < angle1 + angle2 + angle3 + angle4) {
+				pie.setDiams(pieDiameter);
+				pie.setDiam(pieDiameter + 50, 3);
+				if (mousePressed) {
+					launchAnimation(3);
+				}
+			} else if (theta >= angle1 + angle2 + angle3 + angle4
+					&& theta < angle1 + angle2 + angle3 + angle4 + angle5) {
+				pie.setDiams(pieDiameter);
+				pie.setDiam(pieDiameter + 50, 4);
+				if (mousePressed) {
+					launchAnimation(4);
+				}
+			} else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5
+					&& theta < angle1 + angle2 + angle3 + angle4 + angle5
+							+ angle6) {
+				pie.setDiams(pieDiameter);
+				pie.setDiam(pieDiameter + 50, 5);
+				if (mousePressed) {
+					launchAnimation(5);
+				}
+			} else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5
+					+ angle6
+					&& theta < angle1 + angle2 + angle3 + angle4 + angle5
+							+ angle6 + angle7) {
+				pie.setDiams(pieDiameter);
+				pie.setDiam(pieDiameter + 50, 6);
+				if (mousePressed) {
+					launchAnimation(6);
+				}
+			} else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5
+					+ angle6 + angle7) {
+				pie.setDiams(pieDiameter);
+				pie.setDiam(pieDiameter + 50, 7);
+				if (mousePressed) {
+					launchAnimation(7);
+				}
 			}
-			else if (theta >= angle1 + angle2 + angle3 && theta < angle1 + angle2 + angle3 + angle4) {
-				pie.resetDiams(pieDiameter);
-				pie.setDiam(pieDiameter+50, 3);
-			}
-			else if (theta >= angle1 + angle2 + angle3 + angle4 && theta < angle1 + angle2 + angle3 + angle4 + angle5) {
-				pie.resetDiams(pieDiameter);
-				pie.setDiam(pieDiameter+50, 4);
-			}
-			else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5 && theta < angle1 + angle2 + angle3 + angle4 + angle5 + angle6) {
-				pie.resetDiams(pieDiameter);
-				pie.setDiam(pieDiameter+50, 5);
-			} 
-			else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5 + angle6 && theta < angle1 + angle2 + angle3 + angle4 + angle5 + angle6 + angle7) {
-				pie.resetDiams(pieDiameter);
-				pie.setDiam(pieDiameter+50, 6);
-			}
-			else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5 + angle6 + angle7) {
-				pie.resetDiams(pieDiameter);
-				pie.setDiam(pieDiameter+50, 7);
-			}
+		} else {
+			pie.setDiams(pieDiameter);
 		}
-		else {
-			pie.resetDiams(pieDiameter);
-		}
-		needRedraw = true;
 	}
 
 	/**
@@ -262,21 +385,17 @@ public class MainClass extends PApplet {
 		float theta = 0;
 		if (newx > 0 && newy >= 0) {
 			theta = atan(newy / newx);
-		}
-		else if (newx > 0 && newy < 0) {
-			theta = atan(newy / newx) + 2*PI;
-		}
-		else if (newx < 0) {
+		} else if (newx > 0 && newy < 0) {
+			theta = atan(newy / newx) + 2 * PI;
+		} else if (newx < 0) {
 			theta = atan(newy / newx) + PI;
+		} else if (newx == 0 && newy > 0) {
+			theta = PI / 2;
+		} else if (newx == 0 && newy < 0) {
+			theta = (3 * PI) / 2;
 		}
-		else if (newx == 0 && newy > 0) {
-			theta = PI/2;
-		}
-		else if (newx == 0 && newy < 0) {
-			theta = (3*PI)/2;
-		}
-		//convert theta from trigo way to watch way 
-		theta = 2*PI - theta;
+		// convert theta from trigo way to watch way
+		theta = 2 * PI - theta;
 		float[] res = new float[2];
 		res[0] = (float) ro;
 		res[1] = theta;

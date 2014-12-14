@@ -11,12 +11,11 @@ public class PieChart {
 	private float centerX;
 	private float centerY;
 	private ArrayList<RGB> color = new ArrayList<RGB>();
-	private ArrayList<Float> diams = new ArrayList<Float>();
+	private float[] diams = new float[8];
 
 	public PieChart(PApplet p, float diam, float[] angles, float centerX, float centerY) {
 		super();
 		this.angles = angles;
-		this.diam = diam;
 		this.p = p;
 		this.centerX = centerX;
 		this.centerY = centerY;
@@ -28,8 +27,9 @@ public class PieChart {
 		color.add(new RGB(255, 255, 0));
 		color.add(new RGB(255, 128, 0));
 		color.add(new RGB(255, 0, 0));
+		this.diam = diam;
 		for (int i = 0; i < 8; i++) {
-			diams.add(diam);
+			diams[i] = diam;
 		}
 	}
 
@@ -39,14 +39,6 @@ public class PieChart {
 
 	public void setAngles(float[] angles) {
 		this.angles = angles;
-	}
-
-	public float getDiam() {
-		return diam;
-	}
-
-	public void setDiam(float diam) {
-		this.diam = diam;
 	}
 
 	public PApplet getP() {
@@ -76,29 +68,36 @@ public class PieChart {
 	public void setColor(ArrayList<RGB> color) {
 		this.color = color;
 	}
+	
+	public float getDiam() {
+		return diam;
+	}
 
-	public ArrayList<Float> getDiams() {
+	public float[] getDiams() {
 		return diams;
 	}
 
-	public void setDiams(ArrayList<Float> diams) {
+	public void setDiams(float[] diams) {
 		this.diams = diams;
 	}
-	
+
 	public void setDiam(float diam, int position) {
 		if (position < 8) {
-			this.diams.set(position, diam);
+			this.diams[position] = diam;
 		}
 		else {
 			p.println("Error : positon needs to be < 8");
 		}
 	}
+	public float maxDiams() {
+		return p.max(diams);
+	}
 	
-	public void resetDiams(float diam) {
-		diams.clear();
+	public void setDiams(float diam) {
 		for (int i = 0; i < 8; i++) {
-			diams.add(diam);
+			diams[i] = diam;
 		}
+		this.diam = diam;
 	}
 
 	public void drawPieChart() {
@@ -106,8 +105,8 @@ public class PieChart {
 		for (int i = 0; i < angles.length; i++) {
 			RGB c = color.get(i);
 			p.fill(c.getRed(), c.getGreen(), c.getBlue());
-			p.arc(centerX, centerY, diams.get(i), diams.get(i), lastAngle,
-					lastAngle + p.radians(angles[i]), p.PIE);
+			p.arc(centerX, centerY, diams[i], diams[i], lastAngle,
+					lastAngle + p.radians(angles[i]));
 			lastAngle += p.radians(angles[i]);
 		}
 	}
