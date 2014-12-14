@@ -1,15 +1,13 @@
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Float;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Set;
 
-import Model.Movie;
-
-import processing.core.*;
+import processing.core.PApplet;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
+import Model.Movie;
+import Model.RGB;
 
 public class MainClass extends PApplet {
 
@@ -22,7 +20,11 @@ public class MainClass extends PApplet {
 	private ArrayList<Movie> movieList = new ArrayList<Movie>();
 	private JSONArray movs;
 	private ArrayList<String> test = new ArrayList<String>();
-
+	private float angle1, angle2, angle3, angle4, angle5, angle6, angle7,
+			angle8;
+	private static final float pieDiameter = 300;
+	private boolean needRedraw = true;
+	
 	public void setup() {
 		// Fill test
 		test.add("bo");
@@ -56,9 +58,8 @@ public class MainClass extends PApplet {
 
 		movs = movies.getJSONArray("movies");
 
-		// println(movs);
-
-		pie = new PieChart(this, (float) 300, new float[1]);
+		pie = new PieChart(this, pieDiameter, new float[1], width / 2,
+				height / 2);
 
 	}
 
@@ -74,14 +75,18 @@ public class MainClass extends PApplet {
 	}
 
 	public void draw() {
-		background(255);
-		timeLine.drawTimeLine();
-		updatePieChart();
-		pie.drawPieChart();
-
+		if (needRedraw) {
+			background(255);
+			timeLine.drawTimeLine();
+			setPieChartAngles();
+			pie.drawPieChart();
+			needRedraw = false;
+		}
+		pieInteraction();
+		
 	}
 
-	public void updatePieChart() {
+	public void setPieChartAngles() {
 		movieList.clear();
 		for (int i = 0; i < movs.size(); i++) {
 			JSONObject mov = movs.getJSONObject(i);
@@ -151,8 +156,6 @@ public class MainClass extends PApplet {
 			}
 		}
 
-		float angle1, angle2, angle3, angle4, angle5, angle6, angle7, angle8;
-
 		angle1 = (float) (nbPart1 * 360) / nbMovies;
 		angle2 = (float) (nbPart2 * 360) / nbMovies;
 		angle3 = (float) (nbPart3 * 360) / nbMovies;
@@ -160,12 +163,12 @@ public class MainClass extends PApplet {
 		angle5 = (float) (nbPart5 * 360) / nbMovies;
 		angle6 = (float) (nbPart6 * 360) / nbMovies;
 		angle7 = (float) (nbPart7 * 360) / nbMovies;
-		angle8 = (float) (nbPart8 * 360) / nbMovies;
+		angle8 = 360 - angle1 - angle2 - angle3 - angle4 - angle5 - angle6
+				- angle7;// (float) (nbPart8 * 360) / nbMovies;
 
 		float[] angles = { angle1, angle2, angle3, angle4, angle5, angle6,
 				angle7, angle8 };
 		pie.setAngles(angles);
-
 	}
 
 	public void mousePressed() {
@@ -185,6 +188,7 @@ public class MainClass extends PApplet {
 					&& mouseX <= timeLine.getEndPosition().getX()) {
 				timeLine.setCurrentPosition(new Point2D.Float(mouseX, 50));
 				timeLine.updateDate();
+				needRedraw = true;
 			}
 		}
 
@@ -192,10 +196,97 @@ public class MainClass extends PApplet {
 		redraw();
 	}
 
+	/**
+	 * When the mouse is moved and a mouse button is not pressed
+	 */
+	public void pieInteraction() {
+		//Get polar coords
+		float[] newCoords = CartesianToPolar(mouseX, mouseY);
+		//convert theta from radians to degrees
+		float theta = (float) ((newCoords[1] * 180) / Math.PI);
+		println("thta : "+theta);
+		if (dist(mouseX, mouseY, pie.getCenterX(), pie.getCenterY()) < pie
+				.getDiam()/2) {
+			if (theta > 0 && theta < angle1) {
+				pie.resetDiams(pieDiameter);
+				pie.setDiam(pieDiameter+50, 0);
+			} 
+			else if (theta >= angle1 && theta < angle1 + angle2) {
+				pie.resetDiams(pieDiameter);
+				pie.setDiam(pieDiameter+50, 1);
+			} 
+			else if (theta >= angle1 + angle2 && theta < angle1 + angle2 + angle3) {
+				pie.resetDiams(pieDiameter);
+				pie.setDiam(pieDiameter+50, 2);
+			}
+			else if (theta >= angle1 + angle2 + angle3 && theta < angle1 + angle2 + angle3 + angle4) {
+				pie.resetDiams(pieDiameter);
+				pie.setDiam(pieDiameter+50, 3);
+			}
+			else if (theta >= angle1 + angle2 + angle3 + angle4 && theta < angle1 + angle2 + angle3 + angle4 + angle5) {
+				pie.resetDiams(pieDiameter);
+				pie.setDiam(pieDiameter+50, 4);
+			}
+			else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5 && theta < angle1 + angle2 + angle3 + angle4 + angle5 + angle6) {
+				pie.resetDiams(pieDiameter);
+				pie.setDiam(pieDiameter+50, 5);
+			} 
+			else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5 + angle6 && theta < angle1 + angle2 + angle3 + angle4 + angle5 + angle6 + angle7) {
+				pie.resetDiams(pieDiameter);
+				pie.setDiam(pieDiameter+50, 6);
+			}
+			else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5 + angle6 + angle7) {
+				pie.resetDiams(pieDiameter);
+				pie.setDiam(pieDiameter+50, 7);
+			}
+		}
+		else {
+			pie.resetDiams(pieDiameter);
+		}
+		needRedraw = true;
+	}
+
+	/**
+	 * Change coords from M(x,y) to M(ro, theta)
+	 * 
+	 * @param x
+	 * @param y
+	 * @return [ro, theta]
+	 */
+	public float[] CartesianToPolar(float x, float y) {
+		// express M(x,y) in the centered frame
+		float newx = x - pie.getCenterX();
+		float newy = pie.getCenterY() - y;
+		// calculate ro
+		double ro = sqrt(newx * newx + newy * newy);
+		float theta = 0;
+		if (newx > 0 && newy >= 0) {
+			theta = atan(newy / newx);
+		}
+		else if (newx > 0 && newy < 0) {
+			theta = atan(newy / newx) + 2*PI;
+		}
+		else if (newx < 0) {
+			theta = atan(newy / newx) + PI;
+		}
+		else if (newx == 0 && newy > 0) {
+			theta = PI/2;
+		}
+		else if (newx == 0 && newy < 0) {
+			theta = (3*PI)/2;
+		}
+		//convert theta from trigo way to watch way 
+		theta = 2*PI - theta;
+		float[] res = new float[2];
+		res[0] = (float) ro;
+		res[1] = theta;
+		return res;
+	}
+
 	private void readData() {
-		movies = loadJSONObject("./imdb-movies.json");
+		movies = loadJSONObject("../imdb_1990/imdb-movies.json");
 		// println(movies);
-		peoples = loadJSONObject("./imdb-peoples.json");
+		peoples = loadJSONObject("../imdb_1990/imdb-peoples.json");
 		// println(peoples);
 	}
 }

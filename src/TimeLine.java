@@ -112,7 +112,7 @@ public class TimeLine {
 		float d = (float) (currentPosition.getX() - beginPosition.getX());
 		float d2 = (float) (endPosition.getX() - beginPosition.getX());
 		float rapport = d / d2;
-		currentDate = beginDate + Math.round((endDate - beginDate) * d / d2);
+		currentDate = beginDate + Math.round((endDate - beginDate) * rapport);
 	}
 
 }
