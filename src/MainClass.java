@@ -10,11 +10,12 @@ import processing.data.JSONArray;
 import processing.data.JSONObject;
 import Model.Movie;
 import Model.RGB;
+import aurelienribon.tweenengine.*;
 
 public class MainClass extends PApplet {
 
 	private PieChart pie;
-	private TimeLine timeLine;
+	private TimeLineViz timeLineViz;
 	private boolean pressed = false;
 	private JSONObject movies;
 	private JSONObject peoples;
@@ -32,6 +33,8 @@ public class MainClass extends PApplet {
 	private float ro;
 
 	private RGB backgroundColor = new RGB(255, 255, 255);
+	
+	private static final long serialVersionUID = 1L;
 
 	int nbPart1 = 0;
 	int nbPart2 = 0;
@@ -70,7 +73,11 @@ public class MainClass extends PApplet {
 				backgroundColor.getBlue());
 
 		// Set the timeline
+<<<<<<< HEAD
 		timeLine = new TimeLine(this, 1990, 2013, 2010, new Point2D.Float(30,
+=======
+		timeLineViz = new TimeLineViz(this, 1990, 2013, 2005, new Point2D.Float(30,
+>>>>>>> 90c17b5eef56600b9814b4d39dce6b1ccf54f6e3
 				50), new Point2D.Float(770, 50), new Point2D.Float(700, 50), 0,
 				0);
 
@@ -97,13 +104,21 @@ public class MainClass extends PApplet {
 				backgroundColor.getBlue());
 		// If first actvity
 		if (!secondActivity) {
+<<<<<<< HEAD
 			timeLine.drawTimeLine();
 			if (!anim) {
 				setPieChartAngles();
+=======
+			if (!anim) {
+			timeLineViz.drawTimeLineViz();
+			setPieChartAngles();
+			pieInteraction();
+>>>>>>> 90c17b5eef56600b9814b4d39dce6b1ccf54f6e3
 			}
 			pie.drawPieChart();
 
 		} else if (secondActivity) {
+<<<<<<< HEAD
 			if (partClicked == 0) { // create new array list with the movies
 				ArrayList<Movie> ml = new ArrayList<Movie>();
 				for (int i = 0; i < nbPart1; i++) {
@@ -157,6 +172,15 @@ public class MainClass extends PApplet {
 			if (budg > max) {
 				max = budg;
 			}
+=======
+			// TODO : draw things for the graph
+			/* ici pour rŽcupŽrer les datas des movies :
+			 * suivant la partie cliquŽe : 1/2/3/4/5/6/7/8
+			 * les films associŽs sont dans movieList triŽs dans l'odre croissant des budgets
+			 * EX : si on est dans la partie 4
+			 * les films associÃ©s sont les elements de movieList de nbPart1+nbPart2+nbPart3 -1 Ã  nbPart1 +nbPart2+nbPart3+nbPart4-1 
+			 */
+>>>>>>> 90c17b5eef56600b9814b4d39dce6b1ccf54f6e3
 		}
 		return max;
 	}
@@ -175,9 +199,14 @@ public class MainClass extends PApplet {
 			JSONObject mov = movs.getJSONObject(i);
 
 			if (mov.keys().containsAll(test)
+<<<<<<< HEAD
 					&& timeLine.getCurrentDate() == Integer.parseInt(mov
 							.getString("date").substring(0, 4))
 					&& mov.getInt("budjet") != 0) {
+=======
+					&& timeLineViz.getCurrentDate() == Integer.parseInt(mov
+							.getString("date").substring(0, 4))) {
+>>>>>>> 90c17b5eef56600b9814b4d39dce6b1ccf54f6e3
 				movieList.add(new Movie(mov.getInt("bo"), mov
 						.getString("title"), mov.getJSONArray("genres"), mov
 						.getInt("year"), mov.getInt("budjet"), mov
@@ -251,6 +280,34 @@ public class MainClass extends PApplet {
 		pie.setAngles(angles);
 	}
 
+<<<<<<< HEAD
+=======
+	public void mousePressed() {
+		if (Math.abs(mouseX - timeLineViz.getCurrentPosition().getX()) < 20
+				&& Math.abs(mouseY - timeLineViz.getCurrentPosition().getY()) < 20) {
+			pressed = true;
+		}
+	}
+
+	public void mouseReleased() {
+		pressed = false;
+	}
+
+	public void mouseDragged() {
+		if (pressed) {
+			if (mouseX >= timeLineViz.getBeginPosition().getX()
+					&& mouseX <= timeLineViz.getEndPosition().getX()) {
+				timeLineViz.setCurrentPosition(new Point2D.Float(mouseX, 50));
+				timeLineViz.updateDate();
+				anim = false;
+			}
+		}
+
+		// redraw
+		redraw();
+	}
+
+>>>>>>> 90c17b5eef56600b9814b4d39dce6b1ccf54f6e3
 	private void launchAnimation(int nb) {
 		switch (nb) {
 		case 0:
