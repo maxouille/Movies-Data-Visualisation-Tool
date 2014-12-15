@@ -10,12 +10,11 @@ import processing.data.JSONArray;
 import processing.data.JSONObject;
 import Model.Movie;
 import Model.RGB;
-import aurelienribon.tweenengine.*;
 
 public class MainClass extends PApplet {
 
 	private PieChart pie;
-	private TimeLineViz timeLineViz;
+	private TimeLine timeLine;
 	private boolean pressed = false;
 	private JSONObject movies;
 	private JSONObject peoples;
@@ -33,8 +32,6 @@ public class MainClass extends PApplet {
 	private float ro;
 
 	private RGB backgroundColor = new RGB(255, 255, 255);
-	
-	private static final long serialVersionUID = 1L;
 
 	int nbPart1 = 0;
 	int nbPart2 = 0;
@@ -51,6 +48,7 @@ public class MainClass extends PApplet {
 	int endY = 100;
 
 	private int partClicked = -1;
+	private boolean setupFinished = false;
 
 	private ArrayList<Float> xCoord = new ArrayList<Float>();
 	private ArrayList<Float> yCoord = new ArrayList<Float>();
@@ -73,29 +71,18 @@ public class MainClass extends PApplet {
 				backgroundColor.getBlue());
 
 		// Set the timeline
-<<<<<<< HEAD
 		timeLine = new TimeLine(this, 1990, 2013, 2010, new Point2D.Float(30,
-=======
-		timeLineViz = new TimeLineViz(this, 1990, 2013, 2005, new Point2D.Float(30,
->>>>>>> 90c17b5eef56600b9814b4d39dce6b1ccf54f6e3
 				50), new Point2D.Float(770, 50), new Point2D.Float(700, 50), 0,
 				0);
 
-		// load data in background
-		/*
-		 * t = new Thread() { public void run() {
-		 */
 		readData();
-		/*
-		 * } }; t.start();
-		 * 
-		 * while (t.isAlive()) { }
-		 */
 
 		movs = movies.getJSONArray("movies");
 
 		pie = new PieChart(this, pieDiameter, new float[1], width / 2,
 				height / 2);
+
+		setupFinished = true;
 
 	}
 
@@ -104,23 +91,16 @@ public class MainClass extends PApplet {
 				backgroundColor.getBlue());
 		// If first actvity
 		if (!secondActivity) {
-<<<<<<< HEAD
 			timeLine.drawTimeLine();
 			if (!anim) {
 				setPieChartAngles();
-=======
-			if (!anim) {
-			timeLineViz.drawTimeLineViz();
-			setPieChartAngles();
-			pieInteraction();
->>>>>>> 90c17b5eef56600b9814b4d39dce6b1ccf54f6e3
 			}
 			pie.drawPieChart();
 
 		} else if (secondActivity) {
-<<<<<<< HEAD
-			if (partClicked == 0) { // create new array list with the movies
-				ArrayList<Movie> ml = new ArrayList<Movie>();
+			ArrayList<Movie> ml = new ArrayList<Movie>();
+			switch (partClicked) {
+			case 0:
 				for (int i = 0; i < nbPart1; i++) {
 					ml.add(movieList.get(i));
 				}
@@ -145,9 +125,199 @@ public class MainClass extends PApplet {
 						text(ml.get(i).getTitle(), mouseX, mouseY);
 					}
 				}
-			}
+				break;
+			case 1:
+				for (int i = nbPart1; i < nbPart1 + nbPart2; i++) {
+					ml.add(movieList.get(i));
+				}
 
+				strokeWeight(2);
+				stroke(0, 0, 0);
+				line(originX, originY, originX, endY);
+				line(originX, originY, endX, originY);
+				textSize(32);
+				fill(0, 102, 153);
+				textAlign(CENTER);
+				text("X-axis : Budjet ($)", width / 2, height - 10);
+				writeVerticalText(30, height / 2, "Y-axis : Means (0-10)");
+				xCoord.clear();
+				yCoord.clear();
+				drawData(ml);
+
+				for (int i = 0; i < ml.size(); i++) {
+					Movie m = ml.get(i);
+					if (Math.abs(xCoord.get(i) - mouseX) <= 5
+							&& Math.abs(yCoord.get(i) - mouseY) <= 5) {
+						text(ml.get(i).getTitle(), mouseX, mouseY);
+					}
+				}
+				break;
+			case 2:
+				for (int i = nbPart1 + nbPart2; i < nbPart1 + nbPart2 + nbPart3; i++) {
+					ml.add(movieList.get(i));
+				}
+
+				strokeWeight(2);
+				stroke(0, 0, 0);
+				line(originX, originY, originX, endY);
+				line(originX, originY, endX, originY);
+				textSize(32);
+				fill(0, 102, 153);
+				textAlign(CENTER);
+				text("X-axis : Budjet ($)", width / 2, height - 10);
+				writeVerticalText(30, height / 2, "Y-axis : Means (0-10)");
+				xCoord.clear();
+				yCoord.clear();
+				drawData(ml);
+
+				for (int i = 0; i < ml.size(); i++) {
+					Movie m = ml.get(i);
+					if (Math.abs(xCoord.get(i) - mouseX) <= 5
+							&& Math.abs(yCoord.get(i) - mouseY) <= 5) {
+						text(ml.get(i).getTitle(), mouseX, mouseY);
+					}
+				}
+				break;
+			case 3:
+				for (int i = nbPart1 + nbPart2 + nbPart3; i < nbPart1 + nbPart2
+						+ nbPart3 + nbPart4; i++) {
+					ml.add(movieList.get(i));
+				}
+
+				strokeWeight(2);
+				stroke(0, 0, 0);
+				line(originX, originY, originX, endY);
+				line(originX, originY, endX, originY);
+				textSize(32);
+				fill(0, 102, 153);
+				textAlign(CENTER);
+				text("X-axis : Budjet ($)", width / 2, height - 10);
+				writeVerticalText(30, height / 2, "Y-axis : Means (0-10)");
+				xCoord.clear();
+				yCoord.clear();
+				drawData(ml);
+
+				for (int i = 0; i < ml.size(); i++) {
+					Movie m = ml.get(i);
+					if (Math.abs(xCoord.get(i) - mouseX) <= 5
+							&& Math.abs(yCoord.get(i) - mouseY) <= 5) {
+						text(ml.get(i).getTitle(), mouseX, mouseY);
+					}
+				}
+				break;
+			case 4:
+				for (int i = nbPart1 + nbPart2 + nbPart3 + nbPart4; i < nbPart1
+						+ nbPart2 + nbPart3 + nbPart4 + nbPart5; i++) {
+					ml.add(movieList.get(i));
+				}
+
+				strokeWeight(2);
+				stroke(0, 0, 0);
+				line(originX, originY, originX, endY);
+				line(originX, originY, endX, originY);
+				textSize(32);
+				fill(0, 102, 153);
+				textAlign(CENTER);
+				text("X-axis : Budjet ($)", width / 2, height - 10);
+				writeVerticalText(30, height / 2, "Y-axis : Means (0-10)");
+				xCoord.clear();
+				yCoord.clear();
+				drawData(ml);
+
+				for (int i = 0; i < ml.size(); i++) {
+					Movie m = ml.get(i);
+					if (Math.abs(xCoord.get(i) - mouseX) <= 5
+							&& Math.abs(yCoord.get(i) - mouseY) <= 5) {
+						text(ml.get(i).getTitle(), mouseX, mouseY);
+					}
+				}
+				break;
+			case 5:
+				for (int i = nbPart1 + nbPart2 + nbPart3 + nbPart4 + nbPart5; i < nbPart1
+						+ nbPart2 + nbPart3 + nbPart4 + nbPart5 + nbPart6; i++) {
+					ml.add(movieList.get(i));
+				}
+
+				strokeWeight(2);
+				stroke(0, 0, 0);
+				line(originX, originY, originX, endY);
+				line(originX, originY, endX, originY);
+				textSize(32);
+				fill(0, 102, 153);
+				textAlign(CENTER);
+				text("X-axis : Budjet ($)", width / 2, height - 10);
+				writeVerticalText(30, height / 2, "Y-axis : Means (0-10)");
+				xCoord.clear();
+				yCoord.clear();
+				drawData(ml);
+
+				for (int i = 0; i < ml.size(); i++) {
+					Movie m = ml.get(i);
+					if (Math.abs(xCoord.get(i) - mouseX) <= 5
+							&& Math.abs(yCoord.get(i) - mouseY) <= 5) {
+						text(ml.get(i).getTitle(), mouseX, mouseY);
+					}
+				}
+				break;
+			case 6:
+				for (int i = nbPart1 + nbPart2 + nbPart3 + nbPart4 + nbPart5
+						+ nbPart6; i < nbPart1 + nbPart2 + nbPart3 + nbPart4
+						+ nbPart5 + nbPart6 + nbPart7; i++) {
+					ml.add(movieList.get(i));
+				}
+
+				strokeWeight(2);
+				stroke(0, 0, 0);
+				line(originX, originY, originX, endY);
+				line(originX, originY, endX, originY);
+				textSize(32);
+				fill(0, 102, 153);
+				textAlign(CENTER);
+				text("X-axis : Budjet ($)", width / 2, height - 10);
+				writeVerticalText(30, height / 2, "Y-axis : Means (0-10)");
+				xCoord.clear();
+				yCoord.clear();
+				drawData(ml);
+
+				for (int i = 0; i < ml.size(); i++) {
+					Movie m = ml.get(i);
+					if (Math.abs(xCoord.get(i) - mouseX) <= 5
+							&& Math.abs(yCoord.get(i) - mouseY) <= 5) {
+						text(ml.get(i).getTitle(), mouseX, mouseY);
+					}
+				}
+				break;
+			case 7:
+				for (int i = nbPart1 + nbPart2 + nbPart3 + nbPart4 + nbPart5
+						+ nbPart6 + nbPart7; i < nbPart1 + nbPart2 + nbPart3
+						+ nbPart4 + nbPart5 + nbPart6 + nbPart7 + nbPart8; i++) {
+					ml.add(movieList.get(i));
+				}
+
+				strokeWeight(2);
+				stroke(0, 0, 0);
+				line(originX, originY, originX, endY);
+				line(originX, originY, endX, originY);
+				textSize(32);
+				fill(0, 102, 153);
+				textAlign(CENTER);
+				text("X-axis : Budjet ($)", width / 2, height - 10);
+				writeVerticalText(30, height / 2, "Y-axis : Means (0-10)");
+				xCoord.clear();
+				yCoord.clear();
+				drawData(ml);
+
+				for (int i = 0; i < ml.size(); i++) {
+					Movie m = ml.get(i);
+					if (Math.abs(xCoord.get(i) - mouseX) <= 5
+							&& Math.abs(yCoord.get(i) - mouseY) <= 5) {
+						text(ml.get(i).getTitle(), mouseX, mouseY);
+					}
+				}
+				break;
+			}
 		}
+
 	}
 
 	public void drawData(ArrayList<Movie> ml) {
@@ -172,15 +342,6 @@ public class MainClass extends PApplet {
 			if (budg > max) {
 				max = budg;
 			}
-=======
-			// TODO : draw things for the graph
-			/* ici pour rŽcupŽrer les datas des movies :
-			 * suivant la partie cliquŽe : 1/2/3/4/5/6/7/8
-			 * les films associŽs sont dans movieList triŽs dans l'odre croissant des budgets
-			 * EX : si on est dans la partie 4
-			 * les films associÃ©s sont les elements de movieList de nbPart1+nbPart2+nbPart3 -1 Ã  nbPart1 +nbPart2+nbPart3+nbPart4-1 
-			 */
->>>>>>> 90c17b5eef56600b9814b4d39dce6b1ccf54f6e3
 		}
 		return max;
 	}
@@ -199,14 +360,9 @@ public class MainClass extends PApplet {
 			JSONObject mov = movs.getJSONObject(i);
 
 			if (mov.keys().containsAll(test)
-<<<<<<< HEAD
 					&& timeLine.getCurrentDate() == Integer.parseInt(mov
 							.getString("date").substring(0, 4))
 					&& mov.getInt("budjet") != 0) {
-=======
-					&& timeLineViz.getCurrentDate() == Integer.parseInt(mov
-							.getString("date").substring(0, 4))) {
->>>>>>> 90c17b5eef56600b9814b4d39dce6b1ccf54f6e3
 				movieList.add(new Movie(mov.getInt("bo"), mov
 						.getString("title"), mov.getJSONArray("genres"), mov
 						.getInt("year"), mov.getInt("budjet"), mov
@@ -280,94 +436,6 @@ public class MainClass extends PApplet {
 		pie.setAngles(angles);
 	}
 
-<<<<<<< HEAD
-=======
-	public void mousePressed() {
-		if (Math.abs(mouseX - timeLineViz.getCurrentPosition().getX()) < 20
-				&& Math.abs(mouseY - timeLineViz.getCurrentPosition().getY()) < 20) {
-			pressed = true;
-		}
-	}
-
-	public void mouseReleased() {
-		pressed = false;
-	}
-
-	public void mouseDragged() {
-		if (pressed) {
-			if (mouseX >= timeLineViz.getBeginPosition().getX()
-					&& mouseX <= timeLineViz.getEndPosition().getX()) {
-				timeLineViz.setCurrentPosition(new Point2D.Float(mouseX, 50));
-				timeLineViz.updateDate();
-				anim = false;
-			}
-		}
-
-		// redraw
-		redraw();
-	}
-
->>>>>>> 90c17b5eef56600b9814b4d39dce6b1ccf54f6e3
-	private void launchAnimation(int nb) {
-		switch (nb) {
-		case 0:
-
-			/*
-			 * while (angle1 < 360) { angle1 += 1; if (angle2 > 0) { angle2 -=
-			 * 1; } else if (angle3 > 0) { angle2 = 0; angle3 -= 1; } else if
-			 * (angle4 > 0) { angle3 = 0; angle4 -= 1; } else if (angle5 > 0) {
-			 * angle4 = 0; angle5 -= 1; } else if (angle6 > 0) { angle5 = 0;
-			 * angle6 -= 1; } else if (angle7 > 0) { angle6 = 0; angle7 -= 1; }
-			 * else if (angle8 > 0) { angle7 = 0; angle8 -= 1; } angle8 = 0;
-			 * float[] angles = { angle1, angle2, angle3, angle4, angle5,
-			 * angle6, angle7, angle8 }; pie.setAngles(angles); redraw(); }
-			 * 
-			 * float[] angles = { 360, 0, 0, 0, 0, 0, 0, 0 };
-			 * pie.setAngles(angles); redraw();
-			 * 
-			 * while (pie.maxDiams() < width + 300 || pie.maxDiams() < height +
-			 * 300) { pie.setDiams((float) (pie.getDiam() + 0.0001)); redraw();
-			 * }
-			 */
-
-			backgroundColor = pie.getColor().get(0);
-			secondActivity = true;
-			anim = false;
-			break;
-		case 1:
-			backgroundColor = pie.getColor().get(1);
-			secondActivity = true;
-			break;
-		case 2:
-			backgroundColor = pie.getColor().get(2);
-			secondActivity = true;
-			break;
-		case 3:
-			backgroundColor = pie.getColor().get(3);
-			secondActivity = true;
-			break;
-		case 4:
-			backgroundColor = pie.getColor().get(4);
-			secondActivity = true;
-			break;
-		case 5:
-			backgroundColor = pie.getColor().get(5);
-			secondActivity = true;
-			break;
-		case 6:
-			backgroundColor = pie.getColor().get(6);
-			secondActivity = true;
-			break;
-		case 7:
-			backgroundColor = pie.getColor().get(7);
-			secondActivity = true;
-			break;
-		default:
-			break;
-		}
-
-	}
-
 	/**
 	 * When the mouse is moved and a mouse button is not pressed
 	 */
@@ -379,72 +447,38 @@ public class MainClass extends PApplet {
 		ro = newCoords[0];
 		if (ro < pie.getDiam() / 2) {
 			if (theta > 0 && theta < angle1) {
-				/*
-				 * if (mousePressed && !pressed) { // launchAnimation(0); anim =
-				 * true; partClicked = 0; }
-				 */
-
 				pie.setDiams(pieDiameter);
 				pie.setDiam(pieDiameter + 50, 0);
-
 			} else if (theta >= angle1 && theta < angle1 + angle2) {
 				pie.setDiams(pieDiameter);
 				pie.setDiam(pieDiameter + 50, 1);
-				if (mousePressed && !pressed) {
-					launchAnimation(1);
-					anim = true;
-				}
 			} else if (theta >= angle1 + angle2
 					&& theta < angle1 + angle2 + angle3) {
 				pie.setDiams(pieDiameter);
 				pie.setDiam(pieDiameter + 50, 2);
-				if (mousePressed && !pressed) {
-					launchAnimation(2);
-					anim = true;
-				}
 			} else if (theta >= angle1 + angle2 + angle3
 					&& theta < angle1 + angle2 + angle3 + angle4) {
 				pie.setDiams(pieDiameter);
 				pie.setDiam(pieDiameter + 50, 3);
-				if (mousePressed && !pressed) {
-					launchAnimation(3);
-					anim = true;
-				}
 			} else if (theta >= angle1 + angle2 + angle3 + angle4
 					&& theta < angle1 + angle2 + angle3 + angle4 + angle5) {
 				pie.setDiams(pieDiameter);
 				pie.setDiam(pieDiameter + 50, 4);
-				if (mousePressed && !pressed) {
-					launchAnimation(4);
-					anim = true;
-				}
 			} else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5
 					&& theta < angle1 + angle2 + angle3 + angle4 + angle5
 							+ angle6) {
 				pie.setDiams(pieDiameter);
 				pie.setDiam(pieDiameter + 50, 5);
-				if (mousePressed && !pressed) {
-					launchAnimation(5);
-					anim = true;
-				}
 			} else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5
 					+ angle6
 					&& theta < angle1 + angle2 + angle3 + angle4 + angle5
 							+ angle6 + angle7) {
 				pie.setDiams(pieDiameter);
 				pie.setDiam(pieDiameter + 50, 6);
-				if (mousePressed && !pressed) {
-					launchAnimation(6);
-					anim = true;
-				}
 			} else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5
 					+ angle6 + angle7) {
 				pie.setDiams(pieDiameter);
 				pie.setDiam(pieDiameter + 50, 7);
-				if (mousePressed && !pressed) {
-					launchAnimation(7);
-					anim = true;
-				}
 			}
 		} else {
 			pie.setDiams(pieDiameter);
@@ -511,39 +545,38 @@ public class MainClass extends PApplet {
 
 		if (ro < pie.getDiam() / 2) {
 			if (theta > 0 && theta < angle1) {
-				// launchAnimation(0);
 				anim = true;
 				partClicked = 0;
 			} else if (theta >= angle1 && theta < angle1 + angle2) {
-				// launchAnimation(1);
 				anim = true;
+				partClicked = 1;
 			} else if (theta >= angle1 + angle2
 					&& theta < angle1 + angle2 + angle3) {
-				// launchAnimation(2);
 				anim = true;
+				partClicked = 2;
 			} else if (theta >= angle1 + angle2 + angle3
 					&& theta < angle1 + angle2 + angle3 + angle4) {
-				// launchAnimation(3);
 				anim = true;
+				partClicked = 3;
 			} else if (theta >= angle1 + angle2 + angle3 + angle4
 					&& theta < angle1 + angle2 + angle3 + angle4 + angle5) {
-				// launchAnimation(4);
 				anim = true;
+				partClicked = 4;
 			} else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5
 					&& theta < angle1 + angle2 + angle3 + angle4 + angle5
 							+ angle6) {
-				// launchAnimation(5);
 				anim = true;
+				partClicked = 5;
 			} else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5
 					+ angle6
 					&& theta < angle1 + angle2 + angle3 + angle4 + angle5
 							+ angle6 + angle7) {
-				// launchAnimation(6);
 				anim = true;
+				partClicked = 6;
 			} else if (theta >= angle1 + angle2 + angle3 + angle4 + angle5
 					+ angle6 + angle7) {
-				// launchAnimation(7);
 				anim = true;
+				partClicked = 7;
 			}
 		}
 	}
@@ -551,51 +584,395 @@ public class MainClass extends PApplet {
 	public void mouseReleased() {
 		pressed = false;
 		if (anim) {
-			while (angle1 < 360) {
-				delay(3);
-				angle1 += 1;
-				if (angle2 > 0) {
-					angle2 -= 1;
-				} else if (angle3 > 0) {
-					angle2 = 0;
-					angle3 -= 1;
-				} else if (angle4 > 0) {
-					angle3 = 0;
-					angle4 -= 1;
-				} else if (angle5 > 0) {
-					angle4 = 0;
-					angle5 -= 1;
-				} else if (angle6 > 0) {
-					angle5 = 0;
-					angle6 -= 1;
-				} else if (angle7 > 0) {
-					angle6 = 0;
-					angle7 -= 1;
-				} else if (angle8 > 0) {
-					angle7 = 0;
-					angle8 -= 1;
+			float[] angles = { angle1, angle2, angle3, angle4, angle5, angle6,
+					angle7, angle8 };
+			switch (partClicked) {
+			case 0:
+				while (angle1 < 360) {
+					delay(3);
+					angle1 += 1;
+					angles[0] = angle1;
+					if (angle2 > 0) {
+						angle2 -= 1;
+						angles[1] = angle2;
+					} else if (angle3 > 0) {
+						angle3 -= 1;
+						angles[1] = 0;
+						angles[2] = angle3;
+					} else if (angle4 > 0) {
+						angle4 -= 1;
+						angles[2] = 0;
+						angles[3] = angle4;
+					} else if (angle5 > 0) {
+						angle5 -= 1;
+						angles[3] = 0;
+						angles[4] = angle5;
+					} else if (angle6 > 0) {
+						angle6 -= 1;
+						angles[4] = 0;
+						angles[5] = angle6;
+					} else if (angle7 > 0) {
+						angle7 -= 1;
+						angles[5] = 0;
+						angles[6] = angle7;
+					} else if (angle8 > 0) {
+						angle8 -= 1;
+						angles[6] = 0;
+						angles[7] = angle8;
+					}
+					angles[7] = 0;
+					pie.setAngles(angles);
+					redraw();
 				}
-				angle8 = 0;
-				float[] angles = { angle1, angle2, angle3, angle4, angle5,
-						angle6, angle7, angle8 };
+
+				angles[0] = 360;
 				pie.setAngles(angles);
 				redraw();
-			}
 
-			float[] angles = { 360, 0, 0, 0, 0, 0, 0, 0 };
-			pie.setAngles(angles);
-			redraw();
+				pieZoom();
 
-			while (pie.maxDiams() < width + 300
-					|| pie.maxDiams() < height + 300) {
-				delay(1);
-				pie.setDiams((float) (pie.getDiam() + 2));
+				backgroundColor = pie.getColor().get(0);
+				break;
+			case 1:
+				while (angle2 < 360) {
+					delay(3);
+					angle2 += 1;
+					angles[1] = angle2;
+					if (angle3 > 0) {
+						angle3 -= 1;
+						angles[1] = 0;
+						angles[2] = angle3;
+					} else if (angle4 > 0) {
+						angle4 -= 1;
+						angles[2] = 0;
+						angles[3] = angle4;
+					} else if (angle5 > 0) {
+						angle5 -= 1;
+						angles[3] = 0;
+						angles[4] = angle5;
+					} else if (angle6 > 0) {
+						angle6 -= 1;
+						angles[4] = 0;
+						angles[5] = angle6;
+					} else if (angle7 > 0) {
+						angle7 -= 1;
+						angles[5] = 0;
+						angles[6] = angle7;
+					} else if (angle8 > 0) {
+						angle8 -= 1;
+						angles[6] = 0;
+						angles[7] = angle8;
+					} else if (angle1 > 0) {
+						angle1 -= 1;
+						angles[7] = 0;
+						angles[0] = angle1;
+					} else
+						angles[0] = 0;
+					pie.setAngles(angles);
+					redraw();
+				}
+
+				angles[1] = 360;
+				pie.setAngles(angles);
 				redraw();
-			}
 
-			backgroundColor = pie.getColor().get(0);
+				pieZoom();
+
+				backgroundColor = pie.getColor().get(1);
+				break;
+			case 2:
+				while (angle3 < 360) {
+					delay(3);
+					angle3 += 1;
+					angles[2] = angle3;
+					if (angle4 > 0) {
+						angle4 -= 1;
+						angles[2] = 0;
+						angles[3] = angle4;
+					} else if (angle5 > 0) {
+						angle5 -= 1;
+						angles[3] = 0;
+						angles[4] = angle5;
+					} else if (angle6 > 0) {
+						angle6 -= 1;
+						angles[4] = 0;
+						angles[5] = angle6;
+					} else if (angle7 > 0) {
+						angle7 -= 1;
+						angles[5] = 0;
+						angles[6] = angle7;
+					} else if (angle8 > 0) {
+						angle8 -= 1;
+						angles[6] = 0;
+						angles[7] = angle8;
+					} else if (angle1 > 0) {
+						angle1 -= 1;
+						angles[7] = 0;
+						angles[0] = angle1;
+					} else if (angle2 > 0) {
+						angle2 -= 1;
+						angles[0] = 0;
+						angles[1] = angle2;
+					} else
+						angles[1] = 0;
+					pie.setAngles(angles);
+					redraw();
+				}
+
+				angles[2] = 360;
+				pie.setAngles(angles);
+				redraw();
+
+				pieZoom();
+
+				backgroundColor = pie.getColor().get(2);
+				break;
+			case 3:
+				while (angle4 < 360) {
+					delay(3);
+					angle4 += 1;
+					angles[3] = angle4;
+					if (angle5 > 0) {
+						angle5 -= 1;
+						angles[3] = 0;
+						angles[4] = angle5;
+					} else if (angle6 > 0) {
+						angle6 -= 1;
+						angles[4] = 0;
+						angles[5] = angle6;
+					} else if (angle7 > 0) {
+						angle7 -= 1;
+						angles[5] = 0;
+						angles[6] = angle7;
+					} else if (angle8 > 0) {
+						angle8 -= 1;
+						angles[6] = 0;
+						angles[7] = angle8;
+					} else if (angle1 > 0) {
+						angle1 -= 1;
+						angles[7] = 0;
+						angles[0] = angle1;
+					} else if (angle2 > 0) {
+						angle2 -= 1;
+						angles[0] = 0;
+						angles[1] = angle2;
+					} else if (angle3 > 0) {
+						angle3 -= 1;
+						angles[1] = 0;
+						angles[2] = angle3;
+					} else
+						angles[2] = 0;
+					pie.setAngles(angles);
+					redraw();
+				}
+
+				angles[3] = 360;
+				pie.setAngles(angles);
+				redraw();
+
+				pieZoom();
+
+				backgroundColor = pie.getColor().get(3);
+				break;
+			case 4:
+				while (angle5 < 360) {
+					delay(3);
+					angle5 += 1;
+					angles[4] = angle5;
+					if (angle6 > 0) {
+						angle6 -= 1;
+						angles[4] = 0;
+						angles[5] = angle6;
+					} else if (angle7 > 0) {
+						angle7 -= 1;
+						angles[5] = 0;
+						angles[6] = angle7;
+					} else if (angle8 > 0) {
+						angle8 -= 1;
+						angles[6] = 0;
+						angles[7] = angle8;
+					} else if (angle1 > 0) {
+						angle1 -= 1;
+						angles[7] = 0;
+						angles[0] = angle1;
+					} else if (angle2 > 0) {
+						angle2 -= 1;
+						angles[0] = 0;
+						angles[1] = angle2;
+					} else if (angle3 > 0) {
+						angle3 -= 1;
+						angles[1] = 0;
+						angles[2] = angle3;
+					} else if (angle4 > 0) {
+						angle4 -= 1;
+						angles[2] = 0;
+						angles[3] = angle4;
+					} else
+						angles[3] = 0;
+					pie.setAngles(angles);
+					redraw();
+				}
+
+				angles[4] = 360;
+				pie.setAngles(angles);
+				redraw();
+
+				pieZoom();
+
+				backgroundColor = pie.getColor().get(4);
+				break;
+			case 5:
+				while (angle6 < 360) {
+					delay(3);
+					angle6 += 1;
+					angles[5] = angle6;
+					if (angle7 > 0) {
+						angle7 -= 1;
+						angles[5] = 0;
+						angles[6] = angle7;
+					} else if (angle8 > 0) {
+						angle8 -= 1;
+						angles[6] = 0;
+						angles[7] = angle8;
+					} else if (angle1 > 0) {
+						angle1 -= 1;
+						angles[7] = 0;
+						angles[0] = angle1;
+					} else if (angle2 > 0) {
+						angle2 -= 1;
+						angles[0] = 0;
+						angles[1] = angle2;
+					} else if (angle3 > 0) {
+						angle3 -= 1;
+						angles[1] = 0;
+						angles[2] = angle3;
+					} else if (angle4 > 0) {
+						angle4 -= 1;
+						angles[2] = 0;
+						angles[3] = angle4;
+					} else if (angle5 > 0) {
+						angle5 -= 1;
+						angles[3] = 0;
+						angles[4] = angle5;
+					} else
+						angles[4] = 0;
+					pie.setAngles(angles);
+					redraw();
+				}
+
+				angles[5] = 360;
+				pie.setAngles(angles);
+				redraw();
+
+				pieZoom();
+
+				backgroundColor = pie.getColor().get(5);
+				break;
+			case 6:
+				while (angle7 < 360) {
+					delay(3);
+					angle7 += 1;
+					angles[6] = angle7;
+					if (angle8 > 0) {
+						angle8 -= 1;
+						angles[6] = 0;
+						angles[7] = angle8;
+					} else if (angle1 > 0) {
+						angle1 -= 1;
+						angles[7] = 0;
+						angles[0] = angle1;
+					} else if (angle2 > 0) {
+						angle2 -= 1;
+						angles[0] = 0;
+						angles[1] = angle2;
+					} else if (angle3 > 0) {
+						angle3 -= 1;
+						angles[1] = 0;
+						angles[2] = angle3;
+					} else if (angle4 > 0) {
+						angle4 -= 1;
+						angles[2] = 0;
+						angles[3] = angle4;
+					} else if (angle5 > 0) {
+						angle5 -= 1;
+						angles[3] = 0;
+						angles[4] = angle5;
+					} else if (angle6 > 0) {
+						angle6 -= 1;
+						angles[4] = 0;
+						angles[5] = angle6;
+					} else
+						angles[5] = 0;
+					pie.setAngles(angles);
+					redraw();
+				}
+
+				angles[6] = 360;
+				pie.setAngles(angles);
+				redraw();
+
+				pieZoom();
+
+				backgroundColor = pie.getColor().get(6);
+				break;
+			case 7:
+				while (angle8 < 360) {
+					delay(3);
+					angle8 += 1;
+					angles[7] = angle8;
+					if (angle1 > 0) {
+						angle1 -= 1;
+						angles[7] = 0;
+						angles[0] = angle1;
+					} else if (angle2 > 0) {
+						angle2 -= 1;
+						angles[0] = 0;
+						angles[1] = angle2;
+					} else if (angle3 > 0) {
+						angle3 -= 1;
+						angles[1] = 0;
+						angles[2] = angle3;
+					} else if (angle4 > 0) {
+						angle4 -= 1;
+						angles[2] = 0;
+						angles[3] = angle4;
+					} else if (angle5 > 0) {
+						angle5 -= 1;
+						angles[3] = 0;
+						angles[4] = angle5;
+					} else if (angle6 > 0) {
+						angle6 -= 1;
+						angles[4] = 0;
+						angles[5] = angle6;
+					} else if (angle7 > 0) {
+						angle7 -= 1;
+						angles[5] = 0;
+						angles[6] = angle7;
+					} else
+						angles[6] = 0;
+					pie.setAngles(angles);
+					redraw();
+				}
+
+				angles[7] = 360;
+				pie.setAngles(angles);
+				redraw();
+
+				pieZoom();
+
+				backgroundColor = pie.getColor().get(6);
+				break;
+			}// fin switch
 			secondActivity = true;
 			anim = false;
+		}// fin if
+	}
+
+	public void pieZoom() {
+		while (pie.maxDiams() < width + 300 || pie.maxDiams() < height + 300) {
+			delay(1);
+			pie.setDiams((float) (pie.getDiam() + 2));
+			redraw();
 		}
 	}
 
@@ -614,7 +991,9 @@ public class MainClass extends PApplet {
 	}
 
 	public void mouseMoved() {
-		pieInteraction();
+		if (setupFinished) {
+			pieInteraction();
+		}
 	}
 
 	public void keyPressed() {
