@@ -1,7 +1,6 @@
 package Model;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 
 import processing.data.JSONArray;
@@ -140,5 +139,16 @@ public class Movie {
 	public void setDate(String date) {
 		this.date = date;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("title : "+title);
+		sb.append(" //// ");
+		sb.append("budjet : "+budget+"\n");
+		return new String(sb);
+	}
+	
+	
 
 }

@@ -2,21 +2,23 @@ import java.util.ArrayList;
 
 import Model.RGB;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 
 public class PieChart {
 
 	private float diam;
 	private float[] angles;
-	private final PApplet p;
+	private float[] savedAngles;
+	private PGraphics pg;
 	private float centerX;
 	private float centerY;
 	private ArrayList<RGB> color = new ArrayList<RGB>();
-	private float[] diams = new float[8];
+	private float[] diams = new float[5];
 
-	public PieChart(PApplet p, float diam, float[] angles, float centerX, float centerY) {
+	public PieChart(PGraphics pg, float diam, float[] angles, float centerX, float centerY) {
 		super();
 		this.angles = angles;
-		this.p = p;
+		this.pg = pg;
 		this.centerX = centerX;
 		this.centerY = centerY;
 		color.add(new RGB(204, 51, 255));
@@ -28,7 +30,7 @@ public class PieChart {
 		color.add(new RGB(255, 128, 0));
 		color.add(new RGB(255, 0, 0));
 		this.diam = diam;
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 5; i++) {
 			diams[i] = diam;
 		}
 	}
@@ -39,10 +41,6 @@ public class PieChart {
 
 	public void setAngles(float[] angles) {
 		this.angles = angles;
-	}
-
-	public PApplet getP() {
-		return p;
 	}
 
 	public float getCenterX() {
@@ -82,33 +80,41 @@ public class PieChart {
 	}
 
 	public void setDiam(float diam, int position) {
-		if (position < 8) {
+		if (position < 5) {
 			this.diams[position] = diam;
 		}
 		else {
-			p.println("Error : positon needs to be < 8");
+			PApplet.println("Error : positon needs to be < 8");
 		}
 	}
 	public float maxDiams() {
-		return p.max(diams);
+		return PApplet.max(diams);
 	}
 	
 	public void setDiams(float diam) {
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 5; i++) {
 			diams[i] = diam;
 		}
 		this.diam = diam;
+	}
+
+	public float[] getSavedAngles() {
+		return savedAngles;
+	}
+
+	public void setSavedAngles(float[] savedAngles) {
+		this.savedAngles = savedAngles;
 	}
 
 	public void drawPieChart() {
 		float lastAngle = 0;
 		for (int i = 0; i < angles.length; i++) {
 			RGB c = color.get(i);
-			p.fill(c.getRed(), c.getGreen(), c.getBlue());
-			p.arc(centerX, centerY, diams[i], diams[i], lastAngle,
-					lastAngle + p.radians(angles[i]));
-			lastAngle += p.radians(angles[i]);
+			pg.fill(c.getRed(), c.getGreen(), c.getBlue());
+			float diameter = diams[i];
+			pg.arc(centerX, centerY, diameter, diameter, lastAngle,
+					lastAngle + PApplet.radians(angles[i]));
+			lastAngle += PApplet.radians(angles[i]);
 		}
 	}
-
 }

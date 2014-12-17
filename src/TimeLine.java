@@ -1,8 +1,10 @@
 import java.awt.geom.Point2D;
 
 import processing.core.PApplet;
+import processing.core.PGraphics;
 
-public class TimeLineViz {
+
+public class TimeLine {
 	private int beginDate;
 	private int endDate;
 	private int currentDate;
@@ -11,9 +13,9 @@ public class TimeLineViz {
 	private Point2D.Float currentPosition;
 	private int color;
 	private int cursorColor;
-	private final PApplet p;
+	private PGraphics pg;
 
-	public TimeLineViz(PApplet p, int beginDate, int endDate, int currentDate,
+	public TimeLine(PGraphics pg, int beginDate, int endDate, int currentDate,
 			Point2D.Float beginPosition, Point2D.Float endPosition,
 			Point2D.Float currentPosition, int color, int cursorColor) {
 		super();
@@ -25,7 +27,7 @@ public class TimeLineViz {
 		this.currentPosition = currentPosition;
 		this.color = color;
 		this.cursorColor = cursorColor;
-		this.p = p;
+		this.pg = pg;
 	}
 
 	public int getBeginDate() {
@@ -91,28 +93,30 @@ public class TimeLineViz {
 	public void setCursorColor(int cursorColor) {
 		this.cursorColor = cursorColor;
 	}
-
-	public void drawTimeLineViz() {
-		p.line((float) beginPosition.getX(), (float) beginPosition.getY(),
-				(float) endPosition.getX(), (float) endPosition.getY());
-		p.textSize(20);
-		p.textAlign(p.CENTER);
-		p.fill(0, 102, 153);
-		p.text(beginDate + "", (float) beginPosition.getX(),
-				(float) beginPosition.getY() - 15);
-		p.text(endDate + "", (float) endPosition.getX(),
-				(float) endPosition.getY() - 15);
-		p.text(currentDate + "", (float) currentPosition.getX(),
-				(float) currentPosition.getY() - 15);
-		p.ellipse((float) currentPosition.getX(),
-				(float) currentPosition.getY(), 20, 20);
+	
+	public void drawTimeLine () {
+		pg.line((float) beginPosition.getX(), (float) beginPosition.getY(), (float) endPosition.getX(), (float) endPosition.getY());
+		pg.textSize(20);
+		pg.textAlign(PApplet.CENTER);
+		pg.fill(0,102,153);
+		pg.text(beginDate+"", (float) beginPosition.getX(), (float) beginPosition.getY()-15);
+		pg.text(endDate+"", (float) endPosition.getX(), (float) endPosition.getY()-15);
+		pg.text(currentDate+"", (float) currentPosition.getX(), (float) currentPosition.getY()-15);
+		pg.ellipse((float) currentPosition.getX(), (float) currentPosition.getY(), 20, 20);
 	}
-
+	
 	public void updateDate() {
 		float d = (float) (currentPosition.getX() - beginPosition.getX());
 		float d2 = (float) (endPosition.getX() - beginPosition.getX());
-		float rapport = d / d2;
-		currentDate = beginDate + Math.round((endDate - beginDate) * rapport);
+		float rapport = d/d2;
+		currentDate = beginDate + Math.round((endDate - beginDate)*rapport); 
 	}
+	
+	
+	
+	
+	
+	
+	
 
 }
