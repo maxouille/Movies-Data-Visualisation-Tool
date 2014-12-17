@@ -311,9 +311,10 @@ public class MainClass extends PApplet {
 			xCoord.add(x1);
 			yCoord.add(y1);
 			if (clicked) {
-				RGB rgb = colorsGraph[partClicked];
+				RGB rgb;
 				switch (partClicked) {
 				case 0:
+					rgb = colorsGraph[partClicked];
 					if (i < nbPart1) {
 						graphGraphic.fill(rgb.getRed(), rgb.getGreen(),
 								rgb.getBlue());
@@ -325,6 +326,7 @@ public class MainClass extends PApplet {
 					}
 					break;
 				case 1:
+					rgb = colorsGraph[partClicked];
 					if (i >= nbPart1 && i < nbPart1 + nbPart2) {
 						graphGraphic.fill(rgb.getRed(), rgb.getGreen(),
 								rgb.getBlue());
@@ -336,6 +338,7 @@ public class MainClass extends PApplet {
 					}
 					break;
 				case 2:
+					rgb = colorsGraph[partClicked];
 					if (i >= nbPart1 + nbPart2
 							&& i < nbPart1 + nbPart2 + nbPart3) {
 						graphGraphic.fill(rgb.getRed(), rgb.getGreen(),
@@ -349,6 +352,7 @@ public class MainClass extends PApplet {
 					}
 					break;
 				case 3:
+					rgb = colorsGraph[partClicked];
 					if (i >= nbPart1 + nbPart2 + nbPart3
 							&& i < nbPart1 + nbPart2 + nbPart3 + nbPart4) {
 						graphGraphic.fill(rgb.getRed(), rgb.getGreen(),
@@ -361,6 +365,7 @@ public class MainClass extends PApplet {
 					}
 					break;
 				case 4:
+					rgb = colorsGraph[partClicked];
 					if (i >= nbPart1 + nbPart2 + nbPart3 + nbPart4) {
 						graphGraphic.fill(rgb.getRed(), rgb.getGreen(),
 								rgb.getBlue());
@@ -391,7 +396,8 @@ public class MainClass extends PApplet {
 			if (Math.abs(xCoord.get(i) - mouseX) <= 5
 					&& Math.abs(yCoord.get(i)
 							- (mouseY - topPanelHeight - leftPanelHeight)) <= 5) {
-				graphGraphic.text(m.getTitle() +" : "+m.getBudget()+", "+m.getRating().get("mean")+"/10", mouseX, (mouseY
+				graphGraphic.text(m.getTitle() + " : " + m.getBudget() + ", "
+						+ m.getRating().get("mean") + "/10", mouseX, (mouseY
 						- topPanelHeight - leftPanelHeight - 10));
 			}
 		}
@@ -622,57 +628,37 @@ public class MainClass extends PApplet {
 			pressed = true;
 		}
 
-		// If click in a part of the pie
-		if (ro < pie.getDiam() / 2) {
-			clicked = true;
-			if (theta > 0 && theta < angle1) {
-				colorsGraph[0] = pie.getColor().get(0);
-				partClicked = 0;
-			} else if (theta >= angle1 && theta < angle1 + angle2) {
-				colorsGraph[1] = pie.getColor().get(1);
-				partClicked = 1;
-			} else if (theta >= angle1 + angle2
-					&& theta < angle1 + angle2 + angle3) {
-				colorsGraph[2] = pie.getColor().get(2);
-				partClicked = 2;
-			} else if (theta >= angle1 + angle2 + angle3
-					&& theta < angle1 + angle2 + angle3 + angle4) {
-				colorsGraph[3] = pie.getColor().get(3);
-				partClicked = 3;
-			} else if (theta >= angle1 + angle2 + angle3 + angle4) {
-				colorsGraph[4] = pie.getColor().get(4);
-				partClicked = 4;
+		if (pie != null) {
+			// If click in a part of the pie
+			if (ro < pie.getDiam() / 2) {
+				clicked = true;
+				if (theta > 0 && theta < angle1) {
+					colorsGraph[0] = pie.getColor().get(0);
+					partClicked = 0;
+				} else if (theta >= angle1 && theta < angle1 + angle2) {
+					colorsGraph[1] = pie.getColor().get(1);
+					partClicked = 1;
+				} else if (theta >= angle1 + angle2
+						&& theta < angle1 + angle2 + angle3) {
+					colorsGraph[2] = pie.getColor().get(2);
+					partClicked = 2;
+				} else if (theta >= angle1 + angle2 + angle3
+						&& theta < angle1 + angle2 + angle3 + angle4) {
+					colorsGraph[3] = pie.getColor().get(3);
+					partClicked = 3;
+				} else if (theta >= angle1 + angle2 + angle3 + angle4) {
+					colorsGraph[4] = pie.getColor().get(4);
+					partClicked = 4;
+				}
+			} else {
+				for (int i = 0; i < colorsGraph.length; i++) {
+					colorsGraph[i] = defaultColor;
+				}
+				clicked = false;
+				partClicked = -1;
 			}
-		} else {
-			for (int i = 0; i < colorsGraph.length; i++) {
-				colorsGraph[i] = defaultColor;
-			}
-			clicked = false;
-			partClicked = -1;
 		}
 		redraw();
-		
-		
-		// Get all the points
-				HashMap<String, Point2D.Float> genresMap = ad.getGenrePoints();
-				for (String s : genresMap.keySet()) {
-					Point2D.Float p = genresMap.get(s);
-					// IF mouse on the point p
-					
-					if (Math.abs(mouseX - (p.getX()+leftPanelWidth)) < 20
-							&& Math.abs(mouseY - (p.getY()+topPanelHeight)) < 20) {
-						ad.setGenreHL(s);
-						ad.setHL(true);
-						redraw();
-						break;
-					}
-					else {
-						ad.setGenreHL("");
-						ad.setHL(false);
-						redraw();
-					}
-					
-				}
 	}
 
 	public void mouseReleased() {
@@ -704,25 +690,29 @@ public class MainClass extends PApplet {
 	public void mouseMoved() {
 		if (setupFinished) {
 			pieInteraction();
-			// drawCaptionARC();
 			arcDiagramInteraction();
 		}
 	}
 
 	public void arcDiagramInteraction() {
-		
+		// Get all the points
+		HashMap<String, Point2D.Float> genresMap = ad.getGenrePoints();
+		for (String s : genresMap.keySet()) {
+			Point2D.Float p = genresMap.get(s);
+			// IF mouse on the point p
 
+			if (Math.abs(mouseX - (p.getX() + leftPanelWidth)) < 10
+					&& Math.abs(mouseY - (p.getY() + topPanelHeight)) < 10) {
+				ad.setGenreHL(s);
+				ad.setHL(true);
+				ad.setHLPoint(p);
+				redraw();
+				break;
+			} else {
+				ad.setGenreHL("");
+				ad.setHL(false);
+				redraw();
+			}
+		}
 	}
-
-	/*
-	 * public void drawCaptionARC() { //For each point for (String s :
-	 * ad.getGenrePoints().keySet()) {
-	 * 
-	 * }
-	 * 
-	 * // Get the middle angle float beginAngle = angles[i]; float endAngle =
-	 * angles[(i + 1) % 5]; float angle = (endAngle - beginAngle) / 2; // Get
-	 * the radius float r = pieDiameter / 3; float x = r * cos(angle) -
-	 * textWidth(captionNames[i]) / 2; float y = r * sin(angle); }
-	 */
 }

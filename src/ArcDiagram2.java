@@ -1,4 +1,5 @@
 import java.awt.geom.Point2D;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ public class ArcDiagram2 {
 	private PGraphics pg;
 	private HashMap<String, Point2D.Float> genrePoints = new HashMap<String, Point2D.Float>();
 	private ArrayList<String> genreNames = new ArrayList<String>();
+	private Point2D.Float HLPoint;
 
 	public ArcDiagram2(PGraphics pg, Set<Triplet> genres, float radius,
 			Point2D.Float center, ArrayList<String> genreNames) {
@@ -84,6 +86,14 @@ public class ArcDiagram2 {
 		this.genrePoints = genrePoints;
 	}
 
+	public Point2D.Float getHLPoint() {
+		return HLPoint;
+	}
+
+	public void setHLPoint(Point2D.Float hLPoint) {
+		HLPoint = hLPoint;
+	}
+
 	public String getGenreHL() {
 		return genreHL;
 	}
@@ -123,12 +133,27 @@ public class ArcDiagram2 {
 	}
 
 	public void drawArcDiagram() {
+		pg.fill(255,255,255);
 		pg.stroke(0, 0, 0);
 		pg.ellipse((float) center.getX(), (float) center.getY(), radius, radius);
 
+		// DRAW POINTS
 		for (String keys : genrePoints.keySet()) {
 			Point2D.Float p = genrePoints.get(keys);
-			pg.ellipse((float) p.getX(), (float) p.getY(), 20, 20);
+			if (HL) {
+				if (p.equals(HLPoint)) {
+					pg.stroke(255,0,0);
+					
+				}
+				else {
+					pg.stroke(0,0,0);
+				}
+				pg.ellipse((float) p.getX(), (float) p.getY(), 20, 20);
+			}
+			else {
+				pg.stroke(0,0,0);
+				pg.ellipse((float) p.getX(), (float) p.getY(), 20, 20);
+			}
 		}
 
 		Set<Triplet> withHLSet = new HashSet<Triplet>();
@@ -141,7 +166,8 @@ public class ArcDiagram2 {
 
 			// PApplet.println("HL : "+HL+" and genreHL = "+genreHL);
 			if (HL) {
-				if (t.getGenre1().equals(genreHL) || t.getGenre2().equals(genreHL)) {
+				if (t.getGenre1().equals(genreHL)
+						|| t.getGenre2().equals(genreHL)) {
 					withHLSet.add(t);
 					// pg.stroke(255,0,0);
 				} else {
@@ -166,7 +192,14 @@ public class ArcDiagram2 {
 
 		}
 
+		ArrayList<String> hlNAmes = new ArrayList<String>();
 		for (Triplet t : withHLSet) {
+			if (!hlNAmes.contains(t.getGenre1())) {
+				hlNAmes.add(t.getGenre1());
+			}
+			if (!hlNAmes.contains(t.getGenre2())) {
+				hlNAmes.add(t.getGenre2());
+			}
 			// Get the position of the first point
 			Point2D.Float beginPosition = genrePoints.get(t.getGenre1());
 			// For each link, get the position of the second point
@@ -181,6 +214,38 @@ public class ArcDiagram2 {
 					(float) center.getY(), (float) endPosition.getX(),
 					(float) endPosition.getY());
 		}
+		
+		drawCaptionARC(hlNAmes);
 
+	}
+	
+	public void drawCaptionARC(ArrayList<String> names) {
+		float newRadius = radius/2 + (float)40;
+		// For each point
+		for (String s : genrePoints.keySet()) {
+			Point2D.Float p = genrePoints.get(s);
+			float angle = angle(center, p);
+			angle -= PApplet.HALF_PI;
+			
+			
+			float newX = (float) center.getX() + newRadius*PApplet.cos(angle);
+			float newY = (float) center.getY() + newRadius*PApplet.sin(angle);
+			if (names.contains(s)) {
+				pg.fill(255,0,0);
+			}
+			else {
+				pg.fill(0,0,0);
+			}
+			pg.textSize(12);
+			pg.textAlign(PApplet.CENTER);
+			pg.text(s, newX, newY);
+		}
+	}
+	
+	//REtrun the angle between 12hour on the clock
+	public float angle(Point2D.Float center, Point2D.Float p1) {
+	    Point2D.Float p0 = new Point2D.Float((float)center.getX(), (float)center.getY() - (float) Math.sqrt(Math.abs((float)p1.getX() - (float)center.getX()) * Math.abs((float)p1.getX() - (float)center.getX())
+	            + Math.abs((float)p1.getY() - (float)center.getY()) * Math.abs((float)p1.getY() - (float)center.getY())));
+	    return (float) ((2 * Math.atan2(p1.getY() - p0.getY(), p1.getX() - p0.getX())));
 	}
 }
