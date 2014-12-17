@@ -30,7 +30,6 @@ public class ArcDiagram {
 		//Create a link between the name og the genre and his position on the circle
 		for (String keys : genres.keySet()) {
 			genrePoints.put(keys.toString(), new Point2D.Float((float)center.getX() + radius/2*PApplet.cos(lastAngle), (float)center.getY() - radius/2*PApplet.sin(lastAngle)));
-			pg.ellipse((float)center.getX() + radius/2*PApplet.cos(lastAngle), (float)center.getY() - radius/2*PApplet.sin(lastAngle), 20, 20);
 			lastAngle += angle;
 		}
 	}

@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -11,6 +13,7 @@ import processing.data.JSONObject;
 import Model.Couple;
 import Model.Movie;
 import Model.RGB;
+import Model.Triplet;
 
 public class MainClass extends PApplet {
 
@@ -65,55 +68,72 @@ public class MainClass extends PApplet {
 	private ArrayList<Float> xCoord = new ArrayList<Float>();
 	private ArrayList<Float> yCoord = new ArrayList<Float>();
 
-	private ArcDiagram ad;
+	private ArcDiagram2 ad;
 
-	private HashMap<String, ArrayList<Couple>> associatedGenres = new HashMap<String, ArrayList<Couple>>();
+	// private HashMap<String, ArrayList<Couple>> associatedGenres = new
+	// HashMap<String, ArrayList<Couple>>();
+
+	private Set<Triplet> associatedGenres = new HashSet<Triplet>();
+	private ArrayList<String> genreNames = new ArrayList<String>();
+
+	/*
+	 * public void getAssociatedGenres() { synchronized (movieList) {
+	 * 
+	 * associatedGenres.clear();
+	 * 
+	 * if (associatedGenres.isEmpty()) { ArrayList<String> genres =
+	 * movieList.get(0).getGenres(); ArrayList<Couple> res = new
+	 * ArrayList<Couple>(); associatedGenres.put(genres.get(0), res); } for
+	 * (Movie m : movieList) { ArrayList<String> genres = m.getGenres(); for
+	 * (int i = 0; i < genres.size(); i++) { // Get the name of the genre String
+	 * firstGenre = genres.get(i); // Get the list of couples associated with
+	 * this genre ArrayList<Couple> couples = associatedGenres .get(firstGenre);
+	 * // If there is no couples -> create new if (couples == null) { // create
+	 * new arrayList couples = new ArrayList<Couple>(); } // For all of the
+	 * other genres for (int j = 0; j < genres.size(); j++) { boolean isIN =
+	 * false; if (i != j) { String genreName = genres.get(j); // For each item
+	 * in couples for (int k = 0; k < couples.size(); k++) { Couple c =
+	 * couples.get(k); // If the other genre equals to the first if
+	 * (c.getGenre().equals(genreName)) { // Incremente the number
+	 * c.setNumber(c.getNumber() + 1); isIN = true; } }// END for k if (!isIN) {
+	 * // ADD new entry couples.add(new Couple(genreName, 1)); } } }// END for j
+	 * associatedGenres.put(firstGenre, couples); }// END for i }// END for
+	 * movieList } }
+	 */
 
 	public void getAssociatedGenres() {
 		synchronized (movieList) {
 
 			associatedGenres.clear();
 
-			if (associatedGenres.isEmpty()) {
-				ArrayList<String> genres = movieList.get(0).getGenres();
-				ArrayList<Couple> res = new ArrayList<Couple>();
-				associatedGenres.put(genres.get(0), res);
-			}
 			for (Movie m : movieList) {
 				ArrayList<String> genres = m.getGenres();
 				for (int i = 0; i < genres.size(); i++) {
 					// Get the name of the genre
-					String firstGenre = genres.get(i);
-					// Get the list of couples associated with this genre
-					ArrayList<Couple> couples = associatedGenres
-							.get(firstGenre);
-					// If there is no couples -> create new
-					if (couples == null) {
-						// create new arrayList
-						couples = new ArrayList<Couple>();
+					String genre1 = genres.get(i);
+					if (!genreNames.contains(genre1)) {
+						genreNames.add(genre1);
 					}
 					// For all of the other genres
 					for (int j = 0; j < genres.size(); j++) {
 						boolean isIN = false;
 						if (i != j) {
-							String genreName = genres.get(j);
-							// For each item in couples
-							for (int k = 0; k < couples.size(); k++) {
-								Couple c = couples.get(k);
-								// If the other genre equals to the first
-								if (c.getGenre().equals(genreName)) {
-									// Incremente the number
-									c.setNumber(c.getNumber() + 1);
+							String genre2 = genres.get(j);
+							// For each item in the set
+							for (Triplet t : associatedGenres) {
+								// If triplet exists
+								if (t.contains(genre1) && t.contains(genre2)) {
+									t.inc();
 									isIN = true;
 								}
-							}// END for k
+							}
 							if (!isIN) {
 								// ADD new entry
-								couples.add(new Couple(genreName, 1));
+								associatedGenres.add(new Triplet(genre1,
+										genre2, 1));
 							}
 						}
 					}// END for j
-					associatedGenres.put(firstGenre, couples);
 				}// END for i
 			}// END for movieList
 		}
@@ -162,9 +182,9 @@ public class MainClass extends PApplet {
 
 		getAssociatedGenres();
 
-		ad = new ArcDiagram(arcDiagramGraphic, associatedGenres, pieDiameter,
+		ad = new ArcDiagram2(arcDiagramGraphic, associatedGenres, pieDiameter,
 				new Point2D.Float(arcDiagramGraphic.width / 2,
-						arcDiagramGraphic.height / 2));
+						arcDiagramGraphic.height / 2), genreNames);
 
 		createCaption();
 
@@ -297,26 +317,22 @@ public class MainClass extends PApplet {
 					if (i < nbPart1) {
 						graphGraphic.fill(rgb.getRed(), rgb.getGreen(),
 								rgb.getBlue());
-						println(i + " inf to nbPart1");
 					} else {
 						graphGraphic
 								.fill(defaultColor.getRed(),
 										defaultColor.getGreen(),
 										defaultColor.getBlue());
-						println(i + " part != -1");
 					}
 					break;
 				case 1:
 					if (i >= nbPart1 && i < nbPart1 + nbPart2) {
 						graphGraphic.fill(rgb.getRed(), rgb.getGreen(),
 								rgb.getBlue());
-						println(i + " inf to nbPart2");
 					} else {
 						graphGraphic
 								.fill(defaultColor.getRed(),
 										defaultColor.getGreen(),
 										defaultColor.getBlue());
-						println(i + " part != -1");
 					}
 					break;
 				case 2:
@@ -330,7 +346,6 @@ public class MainClass extends PApplet {
 								.fill(defaultColor.getRed(),
 										defaultColor.getGreen(),
 										defaultColor.getBlue());
-						println(i + " part != -1");
 					}
 					break;
 				case 3:
@@ -338,33 +353,28 @@ public class MainClass extends PApplet {
 							&& i < nbPart1 + nbPart2 + nbPart3 + nbPart4) {
 						graphGraphic.fill(rgb.getRed(), rgb.getGreen(),
 								rgb.getBlue());
-						println(i + " inf to nbPart4");
 					} else {
 						graphGraphic
 								.fill(defaultColor.getRed(),
 										defaultColor.getGreen(),
 										defaultColor.getBlue());
-						println(i + " part != -1");
 					}
 					break;
 				case 4:
 					if (i >= nbPart1 + nbPart2 + nbPart3 + nbPart4) {
 						graphGraphic.fill(rgb.getRed(), rgb.getGreen(),
 								rgb.getBlue());
-						println(i + " inf to nbPart5");
 					} else {
 						graphGraphic
 								.fill(defaultColor.getRed(),
 										defaultColor.getGreen(),
 										defaultColor.getBlue());
-						println(i + " part != -1");
 					}
 					break;
 				default:
 
 					graphGraphic.fill(defaultColor.getRed(),
 							defaultColor.getGreen(), defaultColor.getBlue());
-					println(i + " part != -1");
 					break;
 
 				}
@@ -372,7 +382,6 @@ public class MainClass extends PApplet {
 			} else {
 				graphGraphic.fill(defaultColor.getRed(),
 						defaultColor.getGreen(), defaultColor.getBlue());
-				println(i + " not clicked");
 			}
 			graphGraphic.ellipse(x1, y1, 10, 10);
 		}
@@ -382,7 +391,7 @@ public class MainClass extends PApplet {
 			if (Math.abs(xCoord.get(i) - mouseX) <= 5
 					&& Math.abs(yCoord.get(i)
 							- (mouseY - topPanelHeight - leftPanelHeight)) <= 5) {
-				graphGraphic.text(m.getBudget(), mouseX, (mouseY
+				graphGraphic.text(m.getTitle() +" : "+m.getBudget()+", "+m.getRating().get("mean")+"/10", mouseX, (mouseY
 						- topPanelHeight - leftPanelHeight - 10));
 			}
 		}
@@ -642,6 +651,28 @@ public class MainClass extends PApplet {
 			partClicked = -1;
 		}
 		redraw();
+		
+		
+		// Get all the points
+				HashMap<String, Point2D.Float> genresMap = ad.getGenrePoints();
+				for (String s : genresMap.keySet()) {
+					Point2D.Float p = genresMap.get(s);
+					// IF mouse on the point p
+					
+					if (Math.abs(mouseX - (p.getX()+leftPanelWidth)) < 20
+							&& Math.abs(mouseY - (p.getY()+topPanelHeight)) < 20) {
+						ad.setGenreHL(s);
+						ad.setHL(true);
+						redraw();
+						break;
+					}
+					else {
+						ad.setGenreHL("");
+						ad.setHL(false);
+						redraw();
+					}
+					
+				}
 	}
 
 	public void mouseReleased() {
@@ -679,21 +710,7 @@ public class MainClass extends PApplet {
 	}
 
 	public void arcDiagramInteraction() {
-		// Get all the points
-		HashMap<String, Point2D.Float> genresMap = ad.getGenrePoints();
-		for (String s : genresMap.keySet()) {
-			Point2D.Float p = genresMap.get(s);
-			// IF mouse on the point p
-			if (Math.abs(mouseX - leftPanelWidth - p.getX()) < 20
-					&& Math.abs(mouseY - topPanelHeight - p.getY()) < 20) {
-				// arcDiagramGraphic.fill(255,0,0);
-				arcDiagramGraphic.textAlign(PApplet.CENTER);
-				arcDiagramGraphic.text(s, (float) p.getX(),
-						(float) p.getY() - 25);
-				// arcDiagramGraphic.ellipse((float) p.getX(), (float) p.getY(),
-				// (float) 20, (float) 20);
-			}
-		}
+		
 
 	}
 
