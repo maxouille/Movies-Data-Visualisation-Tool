@@ -17,7 +17,7 @@ public class ArcDiagram2 {
 	private boolean HL = false;
 	private Set<Triplet> genres = new HashSet<Triplet>();
 	private float radius;
-	private Point2D.Float center;
+	private Point2D.Float center = new Point2D.Float();
 	private PGraphics pg;
 	private HashMap<String, Point2D.Float> genrePoints = new HashMap<String, Point2D.Float>();
 	private ArrayList<String> genreNames = new ArrayList<String>();
@@ -163,6 +163,7 @@ public class ArcDiagram2 {
 			// For each link, get the position of the second point
 			Point2D endPosition = genrePoints.get(t.getGenre2());
 			pg.noFill();
+
 
 			// PApplet.println("HL : "+HL+" and genreHL = "+genreHL);
 			if (HL) {

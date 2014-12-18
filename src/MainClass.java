@@ -45,18 +45,18 @@ public class MainClass extends PApplet {
 	private PGraphics timeLineGraphic;
 	private PGraphics arcDiagramGraphic;
 
-	private int leftPanelWidth = 800;
-	private int leftPanelHeight = 500;
-	private int rightPanelWidth = 800;
-	private int rightPanelHeight = 500;
-	private int bottomPanelWidth = 1600;
-	private int bottomPanelHeight = 400;
-	private int topPanelWidth = 1600;
+	private int leftPanelWidth = 400;
+	private int leftPanelHeight = 300;
+	private int rightPanelWidth = 400;
+	private int rightPanelHeight = 300;
+	private int bottomPanelWidth = 800;
+	private int bottomPanelHeight = 200;
+	private int topPanelWidth = 800;
 	private int topPanelHeight = 100;
-	private static final float pieDiameter = 300;
+	private static final float pieDiameter = 180;
 	String[] captionNames = new String[5];
 	private RGB[] colorsGraph = new RGB[5];
-	private RGB defaultColor = new RGB(0, 102, 153);
+	private RGB defaultColor = new RGB(200, 200, 200);
 
 	int nbPart1 = 0;
 	int nbPart2 = 0;
@@ -133,7 +133,7 @@ public class MainClass extends PApplet {
 			angles[i] = 0;
 		}
 
-		size(1600, 1000);
+		size(800, 600);
 		pieGraphic = createGraphics(leftPanelWidth, leftPanelHeight);
 		graphGraphic = createGraphics(bottomPanelWidth, bottomPanelHeight);
 		timeLineGraphic = createGraphics(topPanelWidth, topPanelHeight);
@@ -153,7 +153,7 @@ public class MainClass extends PApplet {
 		movs = movies.getJSONArray("movies");
 
 		pie = new PieChart(pieGraphic, pieDiameter,
-				pieGraphic.width / 2, pieGraphic.height / 2);
+				(pieGraphic.width / 2) + 70, pieGraphic.height / 2);
 
 		pie.setAngles(setPieChartAngles());
 		//savedAngles = pie.getAngles();
@@ -188,11 +188,12 @@ public class MainClass extends PApplet {
 			arcDiagramGraphic.background(255);
 			arcDiagramGraphic.noFill();
 			arcDiagramGraphic.strokeWeight(5);
+			arcDiagramGraphic.stroke(0,0,0);
 			arcDiagramGraphic.rect(0,0, rightPanelWidth,rightPanelHeight);
 			arcDiagramGraphic.strokeWeight(2);
 			ad.drawArcDiagram();
 			arcDiagramGraphic.endDraw();
-			image(arcDiagramGraphic, 800, 100);
+			image(arcDiagramGraphic, 400, 100);
 
 			// INITIALISE THE GRAPH PANEL
 			graphGraphic.beginDraw();
@@ -374,8 +375,14 @@ public class MainClass extends PApplet {
 			if (Math.abs(xCoord.get(i) - mouseX) <= 5
 					&& Math.abs(yCoord.get(i)
 							- (mouseY - topPanelHeight - leftPanelHeight)) <= 5) {
-				graphGraphic.text(m.getTitle() + " : " + m.getBudget() + ", "
-						+ m.getRating().get("mean") + "/10", mouseX, (mouseY
+				String name = m.getTitle() + " : " + m.getBudget() + ", "
+						+ m.getRating().get("mean") + "/10";
+				float length = textWidth(name);
+				graphGraphic.fill(200,200,200);
+				graphGraphic.rect(mouseX - length/2 - 20, (mouseY
+						- topPanelHeight - leftPanelHeight-30), length*(float)1.5, 30);
+				graphGraphic.fill(0,0,0);
+				graphGraphic.text(name, mouseX - length/2, (mouseY
 						- topPanelHeight - leftPanelHeight - 10));
 			}
 		}
@@ -500,11 +507,11 @@ public class MainClass extends PApplet {
 				// If clicked : classical interaction with keep
 				if (clicked) {
 					if (partClicked != -1) {
-						pie.setDiam(pieDiameter + 50, partClicked);
+						pie.setDiam(pieDiameter + 30, partClicked);
 						
 					}
 				}
-				pie.setDiam(pieDiameter + 50, 0);
+				pie.setDiam(pieDiameter + 30, 0);
 				pie.setClicked(true);
 				pie.setTextToDisplay((((float)nbPart1*(float)100)/(float)nbMovies)+"%");
 				pie.setMouseX(mouseX);
@@ -514,10 +521,10 @@ public class MainClass extends PApplet {
 				// If clicked : classical interaction with keep
 				if (clicked) {
 					if (partClicked != -1) {
-						pie.setDiam(pieDiameter + 50, partClicked);
+						pie.setDiam(pieDiameter + 30, partClicked);
 					}
 				}
-				pie.setDiam(pieDiameter + 50, 1);
+				pie.setDiam(pieDiameter + 30, 1);
 				pie.setClicked(true);
 				pie.setTextToDisplay((((float)nbPart2*(float)100)/(float)nbMovies)+"%");
 				pie.setMouseX(mouseX);
@@ -528,10 +535,10 @@ public class MainClass extends PApplet {
 				// If clicked : classical interaction with keep
 				if (clicked) {
 					if (partClicked != -1) {
-						pie.setDiam(pieDiameter + 50, partClicked);
+						pie.setDiam(pieDiameter + 30, partClicked);
 					}
 				}
-				pie.setDiam(pieDiameter + 50, 2);
+				pie.setDiam(pieDiameter + 30, 2);
 				pie.setClicked(true);
 				pie.setTextToDisplay((((float)nbPart3*(float)100)/(float)nbMovies)+"%");
 				pie.setMouseX(mouseX);
@@ -542,10 +549,10 @@ public class MainClass extends PApplet {
 				// If clicked : classical interaction with keep
 				if (clicked) {
 					if (partClicked != -1) {
-						pie.setDiam(pieDiameter + 50, partClicked);
+						pie.setDiam(pieDiameter + 30, partClicked);
 					}
 				}
-				pie.setDiam(pieDiameter + 50, 3);
+				pie.setDiam(pieDiameter + 30, 3);
 				pie.setClicked(true);
 				pie.setTextToDisplay((((float)nbPart4*(float)100)/(float)nbMovies)+"%");
 				pie.setMouseX(mouseX);
@@ -555,10 +562,10 @@ public class MainClass extends PApplet {
 				// If clicked : classical interaction with keep
 				if (clicked) {
 					if (partClicked != -1) {
-						pie.setDiam(pieDiameter + 50, partClicked);
+						pie.setDiam(pieDiameter + 30, partClicked);
 					}
 				}
-				pie.setDiam(pieDiameter + 50, 4);
+				pie.setDiam(pieDiameter + 30, 4);
 				pie.setClicked(true);
 				pie.setTextToDisplay((((float)nbPart5*(float)100)/(float)nbMovies)+"%");
 				pie.setMouseX(mouseX);
@@ -569,7 +576,7 @@ public class MainClass extends PApplet {
 			// If clicked : classical interaction with keep
 			if (clicked) {
 				if (partClicked != -1) {
-					pie.setDiam(pieDiameter + 50, partClicked);
+					pie.setDiam(pieDiameter + 30, partClicked);
 				}
 			}
 			pie.setClicked(false);
@@ -681,7 +688,7 @@ public class MainClass extends PApplet {
 		if (pressed) {
 			if (mouseX >= timeLine.getBeginPosition().getX()
 					&& mouseX <= timeLine.getEndPosition().getX()) {
-				timeLine.setCurrentPosition(new Point2D.Float(mouseX, 50));
+				timeLine.setCurrentPosition(new Point2D.Float(mouseX, 30));
 				timeLine.updateDate();
 				final float[] newangles = setPieChartAngles();
 				Thread t = new Thread () {

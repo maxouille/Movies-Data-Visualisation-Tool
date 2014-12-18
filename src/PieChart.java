@@ -25,14 +25,11 @@ public class PieChart {
 		this.pg = pg;
 		this.centerX = centerX;
 		this.centerY = centerY;
-		color.add(new RGB(204, 51, 255));
-		color.add(new RGB(0, 0, 255));
-		color.add(new RGB(51, 204, 255));
-		color.add(new RGB(0, 204, 51));
-		color.add(new RGB(204, 255, 51));
-		color.add(new RGB(255, 255, 0));
-		color.add(new RGB(255, 128, 0));
-		color.add(new RGB(255, 0, 0));
+		color.add(new RGB(55, 162, 220));
+		color.add(new RGB(140, 191, 76));
+		color.add(new RGB(255,235,60));
+		color.add(new RGB(231,69,57));
+		color.add(new RGB(90,68,148));
 		this.diam = diam;
 		for (int i = 0; i < 5; i++) {
 			diams[i] = diam;

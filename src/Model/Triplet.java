@@ -39,6 +39,14 @@ public class Triplet {
 	public boolean contains(String name) {
 		return genre1.equals(name) || genre2.equals(name);
 	}
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(genre1+"/"+genre2+"/"+number);
+		return new String(sb);
+	}
+	
+	
 	
 	
 
