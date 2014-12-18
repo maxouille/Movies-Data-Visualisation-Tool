@@ -14,6 +14,10 @@ public class PieChart {
 	private float centerY;
 	private ArrayList<RGB> color = new ArrayList<RGB>();
 	private float[] diams = new float[5];
+	private float mouseX;
+	private float mouseY;
+	private String textToDisplay;
+	private boolean clicked = false;
 
 	public PieChart(PGraphics pg, float diam, float[] angles, float centerX, float centerY) {
 		super();
@@ -33,6 +37,50 @@ public class PieChart {
 		for (int i = 0; i < 5; i++) {
 			diams[i] = diam;
 		}
+	}
+
+	public PGraphics getPg() {
+		return pg;
+	}
+
+	public void setPg(PGraphics pg) {
+		this.pg = pg;
+	}
+
+	public float getMouseX() {
+		return mouseX;
+	}
+
+	public void setMouseX(float mouseX) {
+		this.mouseX = mouseX;
+	}
+
+	public float getMouseY() {
+		return mouseY;
+	}
+
+	public void setMouseY(float mouseY) {
+		this.mouseY = mouseY;
+	}
+
+	public String getTextToDisplay() {
+		return textToDisplay;
+	}
+
+	public void setTextToDisplay(String textToDisplay) {
+		this.textToDisplay = textToDisplay;
+	}
+
+	public boolean isClicked() {
+		return clicked;
+	}
+
+	public void setClicked(boolean clicked) {
+		this.clicked = clicked;
+	}
+
+	public void setDiam(float diam) {
+		this.diam = diam;
 	}
 
 	public float[] getAngles() {
@@ -115,6 +163,13 @@ public class PieChart {
 			pg.arc(centerX, centerY, diameter, diameter, lastAngle,
 					lastAngle + PApplet.radians(angles[i]));
 			lastAngle += PApplet.radians(angles[i]);
+		}
+		if (clicked) {
+			pg.fill(0,0,0);
+			pg.textSize(20);
+			pg.strokeWeight(3);
+			pg.textAlign(PApplet.CENTER);
+			pg.text(textToDisplay, mouseX, mouseY-10);
 		}
 	}
 }

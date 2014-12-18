@@ -44,11 +44,11 @@ public class MainClass extends PApplet {
 	private PGraphics arcDiagramGraphic;
 
 	private int leftPanelWidth = 800;
-	private int leftPanelHeight = 400;
+	private int leftPanelHeight = 500;
 	private int rightPanelWidth = 800;
-	private int rightPanelHeight = 400;
+	private int rightPanelHeight = 500;
 	private int bottomPanelWidth = 1600;
-	private int bottomPanelHeight = 500;
+	private int bottomPanelHeight = 400;
 	private int topPanelWidth = 1600;
 	private int topPanelHeight = 100;
 	private static final float pieDiameter = 300;
@@ -70,36 +70,9 @@ public class MainClass extends PApplet {
 
 	private ArcDiagram2 ad;
 
-	// private HashMap<String, ArrayList<Couple>> associatedGenres = new
-	// HashMap<String, ArrayList<Couple>>();
 
 	private Set<Triplet> associatedGenres = new HashSet<Triplet>();
 	private ArrayList<String> genreNames = new ArrayList<String>();
-
-	/*
-	 * public void getAssociatedGenres() { synchronized (movieList) {
-	 * 
-	 * associatedGenres.clear();
-	 * 
-	 * if (associatedGenres.isEmpty()) { ArrayList<String> genres =
-	 * movieList.get(0).getGenres(); ArrayList<Couple> res = new
-	 * ArrayList<Couple>(); associatedGenres.put(genres.get(0), res); } for
-	 * (Movie m : movieList) { ArrayList<String> genres = m.getGenres(); for
-	 * (int i = 0; i < genres.size(); i++) { // Get the name of the genre String
-	 * firstGenre = genres.get(i); // Get the list of couples associated with
-	 * this genre ArrayList<Couple> couples = associatedGenres .get(firstGenre);
-	 * // If there is no couples -> create new if (couples == null) { // create
-	 * new arrayList couples = new ArrayList<Couple>(); } // For all of the
-	 * other genres for (int j = 0; j < genres.size(); j++) { boolean isIN =
-	 * false; if (i != j) { String genreName = genres.get(j); // For each item
-	 * in couples for (int k = 0; k < couples.size(); k++) { Couple c =
-	 * couples.get(k); // If the other genre equals to the first if
-	 * (c.getGenre().equals(genreName)) { // Incremente the number
-	 * c.setNumber(c.getNumber() + 1); isIN = true; } }// END for k if (!isIN) {
-	 * // ADD new entry couples.add(new Couple(genreName, 1)); } } }// END for j
-	 * associatedGenres.put(firstGenre, couples); }// END for i }// END for
-	 * movieList } }
-	 */
 
 	public void getAssociatedGenres() {
 		synchronized (movieList) {
@@ -197,6 +170,10 @@ public class MainClass extends PApplet {
 			// DRAW TIMELINE
 			timeLineGraphic.beginDraw();
 			timeLineGraphic.background(255);
+			timeLineGraphic.noFill();
+			timeLineGraphic.strokeWeight(5);
+			timeLineGraphic.rect(0,0, topPanelWidth,topPanelHeight);
+			timeLineGraphic.strokeWeight(2);
 			timeLine.drawTimeLine();
 			timeLineGraphic.endDraw();
 			image(timeLineGraphic, 0, 0);
@@ -204,6 +181,10 @@ public class MainClass extends PApplet {
 			// DRAW ARCDIAGRAM
 			arcDiagramGraphic.beginDraw();
 			arcDiagramGraphic.background(255);
+			arcDiagramGraphic.noFill();
+			arcDiagramGraphic.strokeWeight(5);
+			arcDiagramGraphic.rect(0,0, rightPanelWidth,rightPanelHeight);
+			arcDiagramGraphic.strokeWeight(2);
 			ad.drawArcDiagram();
 			arcDiagramGraphic.endDraw();
 			image(arcDiagramGraphic, 800, 100);
@@ -211,6 +192,10 @@ public class MainClass extends PApplet {
 			// INITIALISE THE GRAPH PANEL
 			graphGraphic.beginDraw();
 			graphGraphic.background(255);
+			graphGraphic.noFill();
+			graphGraphic.strokeWeight(5);
+			graphGraphic.rect(0, 0, bottomPanelWidth, bottomPanelHeight);
+			graphGraphic.strokeWeight(2);
 			graphGraphic.endDraw();
 			image(graphGraphic, 0, topPanelHeight + leftPanelHeight);
 
@@ -218,14 +203,20 @@ public class MainClass extends PApplet {
 			pieGraphic.beginDraw();
 			pieGraphic.background(backgroundColor.getRed(),
 					backgroundColor.getGreen(), backgroundColor.getBlue());
+			pieGraphic.noFill();
+			pieGraphic.strokeWeight(5);
+			pieGraphic.rect(0,0, leftPanelWidth,leftPanelHeight);
+			pieGraphic.strokeWeight(2);
 			pie.drawPieChart();
 			drawCaption();
 			pieGraphic.endDraw();
 			image(pieGraphic, 0, topPanelHeight);
 
-			// If graph has to be displayed if (secondActivity) {
 			graphGraphic.beginDraw();
 			graphGraphic.background(255);
+			graphGraphic.strokeWeight(5);
+			graphGraphic.rect(0, 0, bottomPanelWidth, bottomPanelHeight);
+			graphGraphic.strokeWeight(2);
 			drawGraph();
 			graphGraphic.endDraw();
 			image(graphGraphic, 0, topPanelHeight + leftPanelHeight);
@@ -244,39 +235,20 @@ public class MainClass extends PApplet {
 	}
 
 	public void drawCaption() {
-		float beginAngle = 0;
-		float endAngle = 0;
-		for (int i = 0; i < 5; i++) {
-			if (i == 0) {
-				beginAngle = 0;
-				endAngle = angles[0];
-
-			} else if (i == 1) {
-				beginAngle = angles[0];
-				endAngle = angles[0] + angles[1];
-
-			} else if (i == 2) {
-				beginAngle = angles[0] + angles[1];
-				endAngle = angles[0] + angles[1] + angles[2];
-			} else if (i == 3) {
-				beginAngle = angles[0] + angles[1] + angles[2];
-				endAngle = angles[0] + angles[1] + angles[2] + angles[3];
-			} else if (i == 4) {
-				beginAngle = angles[0] + angles[1] + angles[2] + angles[3];
-				endAngle = 360;
-			}
-
-			// Get the middle angle
-			float angle = beginAngle + (endAngle - beginAngle) / 2;
-			angle = (float) angle * (float) Math.PI / (float) 180;
-			// Get the radius
-			float r = (float) (pieDiameter / 2);
-			String name = captionNames[i];
-			float x = pie.getCenterX() + r * cos(angle) - (textWidth(name) / 2);
-			float y = pie.getCenterY() + r * sin(angle);
-			pieGraphic.textAlign(PApplet.CENTER);
-			pieGraphic.fill(0);
-			pieGraphic.text(name, x, y);
+		float beginX = 15;
+		float beginY = 15;
+		float currY = 0;
+		float edge = 15;
+		for (int i = 0 ; i < 5; i++) {
+			currY += 2 * beginY;
+			RGB rgb =  pie.getColor().get(i);
+			pieGraphic.fill(rgb.getRed(), rgb.getGreen(), rgb.getBlue());
+			pieGraphic.strokeWeight(0);
+			pieGraphic.rect(beginX, currY, edge, edge);
+			pieGraphic.strokeWeight(2);
+			pieGraphic.textSize(12);
+			pieGraphic.textAlign(PApplet.LEFT);
+			pieGraphic.text(captionNames[i], beginX + edge + 10, currY + (float)0.75 * edge);
 		}
 	}
 
@@ -509,6 +481,7 @@ public class MainClass extends PApplet {
 	 * When the mouse is moved and a mouse button is not pressed
 	 */
 	public void pieInteraction() {
+		int nbMovies = movieList.size();
 		// Get polar coords
 		float[] newCoords = CartesianToPolar(mouseX, mouseY - topPanelHeight);
 		// convert theta from radians to degrees
@@ -521,9 +494,14 @@ public class MainClass extends PApplet {
 				if (clicked) {
 					if (partClicked != -1) {
 						pie.setDiam(pieDiameter + 50, partClicked);
+						
 					}
 				}
 				pie.setDiam(pieDiameter + 50, 0);
+				pie.setClicked(true);
+				pie.setTextToDisplay(((nbPart1*100)/nbMovies)+"%");
+				pie.setMouseX(mouseX);
+				pie.setMouseY(mouseY - topPanelHeight);
 			} else if (theta >= angle1 && theta < angle1 + angle2) {
 				pie.setDiams(pieDiameter);
 				// If clicked : classical interaction with keep
@@ -533,6 +511,10 @@ public class MainClass extends PApplet {
 					}
 				}
 				pie.setDiam(pieDiameter + 50, 1);
+				pie.setClicked(true);
+				pie.setTextToDisplay(((nbPart2*100)/nbMovies)+"%");
+				pie.setMouseX(mouseX);
+				pie.setMouseY(mouseY - topPanelHeight);
 			} else if (theta >= angle1 + angle2
 					&& theta < angle1 + angle2 + angle3) {
 				pie.setDiams(pieDiameter);
@@ -543,6 +525,10 @@ public class MainClass extends PApplet {
 					}
 				}
 				pie.setDiam(pieDiameter + 50, 2);
+				pie.setClicked(true);
+				pie.setTextToDisplay(((nbPart3*100)/nbMovies)+"%");
+				pie.setMouseX(mouseX);
+				pie.setMouseY(mouseY - topPanelHeight);
 			} else if (theta >= angle1 + angle2 + angle3
 					&& theta < angle1 + angle2 + angle3 + angle4) {
 				pie.setDiams(pieDiameter);
@@ -553,6 +539,10 @@ public class MainClass extends PApplet {
 					}
 				}
 				pie.setDiam(pieDiameter + 50, 3);
+				pie.setClicked(true);
+				pie.setTextToDisplay(((nbPart4*100)/nbMovies)+"%");
+				pie.setMouseX(mouseX);
+				pie.setMouseY(mouseY - topPanelHeight);
 			} else if (theta >= angle1 + angle2 + angle3 + angle4) {
 				pie.setDiams(pieDiameter);
 				// If clicked : classical interaction with keep
@@ -562,6 +552,10 @@ public class MainClass extends PApplet {
 					}
 				}
 				pie.setDiam(pieDiameter + 50, 4);
+				pie.setClicked(true);
+				pie.setTextToDisplay(((nbPart5*100)/nbMovies)+"%");
+				pie.setMouseX(mouseX);
+				pie.setMouseY(mouseY - topPanelHeight);
 			}
 		} else {
 			pie.setDiams(pieDiameter);
@@ -571,6 +565,7 @@ public class MainClass extends PApplet {
 					pie.setDiam(pieDiameter + 50, partClicked);
 				}
 			}
+			pie.setClicked(false);
 		}
 		redraw();
 	}
