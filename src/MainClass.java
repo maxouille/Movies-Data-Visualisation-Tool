@@ -506,7 +506,7 @@ public class MainClass extends PApplet {
 				}
 				pie.setDiam(pieDiameter + 50, 0);
 				pie.setClicked(true);
-				pie.setTextToDisplay(((nbPart1*100)/nbMovies)+"%");
+				pie.setTextToDisplay((((float)nbPart1*(float)100)/(float)nbMovies)+"%");
 				pie.setMouseX(mouseX);
 				pie.setMouseY(mouseY - topPanelHeight);
 			} else if (theta >= angle1 && theta < angle1 + angle2) {
@@ -519,7 +519,7 @@ public class MainClass extends PApplet {
 				}
 				pie.setDiam(pieDiameter + 50, 1);
 				pie.setClicked(true);
-				pie.setTextToDisplay(((nbPart2*100)/nbMovies)+"%");
+				pie.setTextToDisplay((((float)nbPart2*(float)100)/(float)nbMovies)+"%");
 				pie.setMouseX(mouseX);
 				pie.setMouseY(mouseY - topPanelHeight);
 			} else if (theta >= angle1 + angle2
@@ -533,7 +533,7 @@ public class MainClass extends PApplet {
 				}
 				pie.setDiam(pieDiameter + 50, 2);
 				pie.setClicked(true);
-				pie.setTextToDisplay(((nbPart3*100)/nbMovies)+"%");
+				pie.setTextToDisplay((((float)nbPart3*(float)100)/(float)nbMovies)+"%");
 				pie.setMouseX(mouseX);
 				pie.setMouseY(mouseY - topPanelHeight);
 			} else if (theta >= angle1 + angle2 + angle3
@@ -547,7 +547,7 @@ public class MainClass extends PApplet {
 				}
 				pie.setDiam(pieDiameter + 50, 3);
 				pie.setClicked(true);
-				pie.setTextToDisplay(((nbPart4*100)/nbMovies)+"%");
+				pie.setTextToDisplay((((float)nbPart4*(float)100)/(float)nbMovies)+"%");
 				pie.setMouseX(mouseX);
 				pie.setMouseY(mouseY - topPanelHeight);
 			} else if (theta >= angle1 + angle2 + angle3 + angle4) {
@@ -560,7 +560,7 @@ public class MainClass extends PApplet {
 				}
 				pie.setDiam(pieDiameter + 50, 4);
 				pie.setClicked(true);
-				pie.setTextToDisplay(((nbPart5*100)/nbMovies)+"%");
+				pie.setTextToDisplay((((float)nbPart5*(float)100)/(float)nbMovies)+"%");
 				pie.setMouseX(mouseX);
 				pie.setMouseY(mouseY - topPanelHeight);
 			}
