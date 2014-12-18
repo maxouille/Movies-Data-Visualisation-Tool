@@ -35,6 +35,8 @@ public class MainClass extends PApplet {
 	private boolean clicked = false;
 
 	float[] angles = new float[5];
+	
+	float[] savedAngles = new float[5];
 
 	private RGB backgroundColor = new RGB(255, 255, 255);
 
@@ -127,6 +129,8 @@ public class MainClass extends PApplet {
 
 		for (int i = 0; i < 5; i++) {
 			colorsGraph[i] = defaultColor;
+			savedAngles[i] = 0;
+			angles[i] = 0;
 		}
 
 		size(1600, 1000);
@@ -148,10 +152,11 @@ public class MainClass extends PApplet {
 
 		movs = movies.getJSONArray("movies");
 
-		pie = new PieChart(pieGraphic, pieDiameter, new float[1],
+		pie = new PieChart(pieGraphic, pieDiameter,
 				pieGraphic.width / 2, pieGraphic.height / 2);
 
-		setPieChartAngles();
+		pie.setAngles(setPieChartAngles());
+		//savedAngles = pie.getAngles();
 
 		getAssociatedGenres();
 
@@ -206,8 +211,9 @@ public class MainClass extends PApplet {
 			pieGraphic.noFill();
 			pieGraphic.strokeWeight(5);
 			pieGraphic.rect(0,0, leftPanelWidth,leftPanelHeight);
-			pieGraphic.strokeWeight(2);
+			pieGraphic.strokeWeight(2);			
 			pie.drawPieChart();
+			createCaption();
 			drawCaption();
 			pieGraphic.endDraw();
 			image(pieGraphic, 0, topPanelHeight);
@@ -226,12 +232,11 @@ public class MainClass extends PApplet {
 
 	public void createCaption() {
 		float part = maxBudget(movieList) / 5;
-
-		captionNames[0] = "0 - " + part;
-		captionNames[1] = part + " - " + (2 * part);
-		captionNames[2] = (2 * part) + " - " + (3 * part);
-		captionNames[3] = (3 * part) + " - " + (4 * part);
-		captionNames[4] = (4 * part) + " - " + (5 * part);
+		captionNames[0] = "0 € - " + part+" €";
+		captionNames[1] = part +" €"+ " - " + (2 * part)+" €";
+		captionNames[2] = (2 * part)+" €" + " - " + (3 * part)+" €";
+		captionNames[3] = (3 * part)+" €" + " - " + (4 * part)+" €";
+		captionNames[4] = (4 * part)+" €" + " - " + (5 * part)+" €";
 	}
 
 	public void drawCaption() {
@@ -267,7 +272,8 @@ public class MainClass extends PApplet {
 		graphGraphic.fill(0, 102, 153);
 		graphGraphic.textAlign(CENTER);
 		graphGraphic.text("Budjet in $", endX - 30, originY + 16);
-		writeVerticalText(graphGraphic, originX, endY, "Means (0-10)");
+		graphGraphic.textAlign(LEFT);
+		graphGraphic.text("Means (0-10)", originX, endY - 10);
 		xCoord.clear();
 		yCoord.clear();
 
@@ -398,14 +404,6 @@ public class MainClass extends PApplet {
 		return min;
 	}
 
-	public void writeVerticalText(PGraphics pg, int x, int y, String text) {
-		pushMatrix();
-		translate(x, y);
-		rotate(-HALF_PI);
-		pg.text(text, 0, 0);
-		popMatrix();
-	}
-
 	public void getMovies() {
 		movieList.clear();
 		for (int i = 0; i < movs.size(); i++) {
@@ -426,7 +424,7 @@ public class MainClass extends PApplet {
 		sortMoviesbyBudget();
 	}
 
-	public void setPieChartAngles() {
+	public float[] setPieChartAngles() {
 		getMovies();
 
 		int nbMovies = movieList.size();
@@ -463,18 +461,27 @@ public class MainClass extends PApplet {
 			}
 		}
 
-		angle1 = (float) (nbPart1 * 360) / nbMovies;
-		angle2 = (float) (nbPart2 * 360) / nbMovies;
-		angle3 = (float) (nbPart3 * 360) / nbMovies;
-		angle4 = (float) (nbPart4 * 360) / nbMovies;
-		angle5 = 360 - angle1 - angle2 - angle3 - angle4;
+		float[] newangles = new float[5];
+		newangles[0] = (float) (nbPart1 * 360) / nbMovies;
+		newangles[1] = (float) (nbPart2 * 360) / nbMovies;
+		newangles[2] = (float) (nbPart3 * 360) / nbMovies;
+		newangles[3] = (float) (nbPart4 * 360) / nbMovies;
+		newangles[4] = 360 - newangles[0] - newangles[1] - newangles[2] - newangles[3];
 
-		angles[0] = angle1;
-		angles[1] = angle2;
-		angles[2] = angle3;
-		angles[3] = angle4;
-		angles[4] = angle5;
-		pie.setAngles(angles);
+		angle1 = newangles[0];
+		angle2 = newangles[1];
+		angle3 = newangles[2];
+		angle4 = newangles[3];
+		angle5 = newangles[4];
+		
+		angles[0] = newangles[0];
+		angles[1] = newangles[1];
+		angles[2] = newangles[2];
+		angles[3] = newangles[3];
+		angles[4] = newangles[4];
+		
+		
+		return newangles;
 	}
 
 	/**
@@ -658,6 +665,7 @@ public class MainClass extends PApplet {
 
 	public void mouseReleased() {
 		pressed = false;
+		pie.setAnim(false);
 		redraw();
 	}
 
@@ -675,7 +683,36 @@ public class MainClass extends PApplet {
 					&& mouseX <= timeLine.getEndPosition().getX()) {
 				timeLine.setCurrentPosition(new Point2D.Float(mouseX, 50));
 				timeLine.updateDate();
-				setPieChartAngles();
+				final float[] newangles = setPieChartAngles();
+				Thread t = new Thread () {
+					public void run() {
+						while (Math.abs(savedAngles[0] - newangles[0]) > 1 && Math.abs(savedAngles[1] - newangles[1]) > 1 &&
+								Math.abs(savedAngles[2] - newangles[2]) > 1 && Math.abs(savedAngles[3] - newangles[3]) > 1 &&
+								Math.abs(savedAngles[4] - newangles[4]) > 1) {
+							try {
+								Thread.sleep(30);
+							} catch (InterruptedException e) {
+								
+								e.printStackTrace();
+							}		
+							savedAngles[0] += (newangles[0] - savedAngles[0])*0.1;
+							savedAngles[1] += (newangles[1] - savedAngles[1])*0.1;
+							savedAngles[2] += (newangles[2] - savedAngles[2])*0.1;
+							savedAngles[3] += (newangles[3] - savedAngles[3])*0.1;
+							savedAngles[4] += (newangles[4] - savedAngles[4])*0.1;
+							pie.setAngles(savedAngles);
+							redraw();
+						
+					}
+						savedAngles[0] = newangles[0];
+						savedAngles[1] = newangles[1];
+						savedAngles[2] = newangles[2];
+						savedAngles[3] = newangles[3];
+						savedAngles[4] = newangles[4];
+						pie.setAngles(savedAngles);
+						redraw();
+					}};
+					t.start();
 				getAssociatedGenres();
 			}
 			redraw();
